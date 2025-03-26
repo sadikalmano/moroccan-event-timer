@@ -15,12 +15,13 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 
-// Initialize the database on application startup
-import { migrateDatabase } from "./utils/migrations";
-try {
-  migrateDatabase();
-} catch (error) {
-  console.error("Failed to run migrations:", error);
+// Setup mock API for development
+import { setupMockAPI } from "./utils/mockApi";
+
+// Only setup mock API in development mode
+if (process.env.NODE_ENV === 'development') {
+  setupMockAPI();
+  console.log('Mock API initialized for development');
 }
 
 const queryClient = new QueryClient();
