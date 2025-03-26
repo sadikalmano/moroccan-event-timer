@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Migration from './pages/Migration';
 import NotFound from './pages/NotFound';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -35,6 +36,7 @@ function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/migration" element={<Migration />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Toaster />

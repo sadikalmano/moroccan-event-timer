@@ -2,6 +2,7 @@
 // In a real application, you would replace this with actual API calls
 
 import { UserAuth } from '../services/authService';
+import { databaseSchema } from './migrations';
 
 // Mock user data
 const mockUsers = [
@@ -293,6 +294,31 @@ export function setupMockAPI() {
       if (apiPath === '/events/pending' && method === 'GET') {
         const result = mockAPI.getPendingEvents();
         return createMockResponse(200, result);
+      }
+      
+      if (apiPath === '/api/migrations/run') {
+        console.log('Running mock migrations...');
+        
+        try {
+          // In a real scenario, this would execute SQL against the database
+          // Here we're just simulating success
+          const { usersTableSchema, eventsTableSchema } = databaseSchema;
+          
+          console.log('Would execute:');
+          console.log(usersTableSchema);
+          console.log(eventsTableSchema);
+          
+          return [200, { 
+            success: true, 
+            message: `Successfully created tables in database '${databaseSchema.databaseName}'` 
+          }];
+        } catch (error) {
+          console.error('Migration error:', error);
+          return [500, { 
+            success: false, 
+            message: 'Error running migrations' 
+          }];
+        }
       }
       
       // If we get here, the API endpoint is not mocked
