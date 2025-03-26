@@ -5,6 +5,19 @@ import App from './App.tsx'
 import './index.css'
 import { useEffect } from 'react'
 
+// Define the gtag function for TypeScript
+interface Window {
+  dataLayer: any[];
+  gtag: (...args: any[]) => void;
+}
+
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
+
 const GtagScript = () => {
   useEffect(() => {
     // Dynamically load the Google Analytics script
@@ -16,11 +29,12 @@ const GtagScript = () => {
     script.onload = () => {
       // Initialize gtag after the script has loaded
       window.dataLayer = window.dataLayer || []
-      function gtag() {
+      function gtag(...args: any[]) {
         window.dataLayer.push(arguments)
       }
-      gtag('js', new Date())
-      gtag('config', 'G-RW1Q3YRVS2')
+      window.gtag = gtag
+      window.gtag('js', new Date())
+      window.gtag('config', 'G-RW1Q3YRVS2')
     }
   }, [])
 
