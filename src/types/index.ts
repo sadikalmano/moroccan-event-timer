@@ -1,4 +1,12 @@
 
+export interface EventSubscriber {
+  id: string;
+  name: string;
+  whatsapp: string;
+  eventId: string;
+  createdAt: string;
+}
+
 export interface Event {
   id: string;
   title: string;
@@ -13,6 +21,7 @@ export interface Event {
   organizer: string;
   createdAt: string;
   status: 'pending' | 'approved' | 'rejected';
+  subscribers?: EventSubscriber[];
 }
 
 export interface User {

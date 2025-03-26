@@ -5,9 +5,10 @@ import {
   createEventAPI, 
   updateEventStatusAPI,
   getUserEventsAPI,
-  getPendingEventsAPI
+  getPendingEventsAPI,
+  subscribeToEventAPI
 } from '../utils/db';
-import { Event } from '../types';
+import { Event, EventSubscriber } from '../types';
 
 export async function getEvents(filters?: {
   search?: string, 
@@ -50,7 +51,7 @@ export async function updateEventStatus(eventId: number, status: 'approved' | 'r
   }
 }
 
-export async function getUserEvents(userId: number) {
+export async function getUserEvents(userId: number | string) {
   try {
     return await getUserEventsAPI();
   } catch (error) {
@@ -64,6 +65,15 @@ export async function getPendingEvents() {
     return await getPendingEventsAPI();
   } catch (error) {
     console.error('Error fetching pending events:', error);
+    throw error;
+  }
+}
+
+export async function subscribeToEvent(eventId: string | number, subscriberData: { name: string, whatsapp: string }) {
+  try {
+    return await subscribeToEventAPI(eventId, subscriberData);
+  } catch (error) {
+    console.error('Error subscribing to event:', error);
     throw error;
   }
 }

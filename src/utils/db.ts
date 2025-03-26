@@ -82,3 +82,10 @@ export async function getUserEventsAPI() {
 export async function getPendingEventsAPI() {
   return fetchWithAuth('/events/pending');
 }
+
+export async function subscribeToEventAPI(eventId: string | number, subscriberData: { name: string, whatsapp: string }) {
+  return fetchWithAuth(`/events/${eventId}/subscribe`, {
+    method: 'POST',
+    body: JSON.stringify(subscriberData)
+  });
+}

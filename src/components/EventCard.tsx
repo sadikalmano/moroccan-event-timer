@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin, Users } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import CountdownTimer from './CountdownTimer';
 import type { Event } from '../types';
@@ -49,9 +49,14 @@ const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
           })}</span>
         </div>
         
-        <div className="flex items-center text-sm text-foreground/70 mb-4">
+        <div className="flex items-center text-sm text-foreground/70 mb-2">
           <MapPin className="w-4 h-4 mr-2" />
           <span>{event.city}, Morocco</span>
+        </div>
+        
+        <div className="flex items-center text-sm text-foreground/70 mb-4">
+          <Users className="w-4 h-4 mr-2" />
+          <span>{event.subscribers?.length || 0} {t('event.subscribers')}</span>
         </div>
         
         <div className="mb-4">
@@ -60,7 +65,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
         
         <Link 
           to={`/events/${event.id}`} 
-          className="block w-full text-center py-2 bg-primary/10 hover:bg-primary/20 text-primary-foreground rounded-md transition-colors"
+          className="block w-full text-center py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md transition-colors"
         >
           {t('common.viewMore')}
         </Link>

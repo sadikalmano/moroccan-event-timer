@@ -7,6 +7,8 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Migration from './pages/Migration';
+import Dashboard from './pages/Dashboard';
+import EventDetail from './pages/EventDetail';
 import NotFound from './pages/NotFound';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -37,6 +39,8 @@ function App() {
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/migration" element={<Migration />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/events/:id" element={<EventDetail />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Toaster />
