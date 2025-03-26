@@ -1,4 +1,3 @@
-
 // This file provides mock API responses for development
 // In a real application, you would replace this with actual API calls
 
@@ -232,8 +231,9 @@ export const mockAPI = {
 export function setupMockAPI() {
   const originalFetch = window.fetch;
   
-  window.fetch = async function(input: RequestInfo | URL, init?: RequestInit) {
-    const url = typeof input === 'string' ? input : input.url;
+  window.fetch = function(input: RequestInfo | URL, init?: RequestInit) {
+    const url = typeof input === 'string' ? input : 
+               input instanceof Request ? input.url : input.toString();
     
     // Process only API requests, pass through others
     if (!url.startsWith('/api/')) {
@@ -250,48 +250,48 @@ export function setupMockAPI() {
       
       // Handle different API endpoints
       if (apiPath === '/auth/login' && method === 'POST') {
-        const result = await mockAPI.login(body.email, body.password);
+        const result = mockAPI.login(body.email, body.password);
         return createMockResponse(200, result);
       }
       
       if (apiPath === '/auth/register' && method === 'POST') {
-        const result = await mockAPI.register(body.name, body.email, body.password, body.organization);
+        const result = mockAPI.register(body.name, body.email, body.password, body.organization);
         return createMockResponse(201, result);
       }
       
       if (apiPath.match(/^\/events$/) && method === 'GET') {
         const urlObj = new URL(url, window.location.origin);
         const filters = Object.fromEntries(urlObj.searchParams.entries());
-        const result = await mockAPI.getEvents(filters);
+        const result = mockAPI.getEvents(filters);
         return createMockResponse(200, result);
       }
       
       if (apiPath.match(/^\/events\/\d+$/) && method === 'GET') {
         const id = apiPath.split('/')[2];
-        const result = await mockAPI.getEventById(Number(id));
+        const result = mockAPI.getEventById(Number(id));
         return createMockResponse(200, result);
       }
       
       if (apiPath === '/events' && method === 'POST') {
-        const result = await mockAPI.createEvent(body);
+        const result = mockAPI.createEvent(body);
         return createMockResponse(201, result);
       }
       
       if (apiPath.match(/^\/events\/\d+\/status$/) && method === 'PATCH') {
         const id = apiPath.split('/')[2];
-        const result = await mockAPI.updateEventStatus(Number(id), body.status);
+        const result = mockAPI.updateEventStatus(Number(id), body.status);
         return createMockResponse(200, result);
       }
       
       if (apiPath === '/events/user' && method === 'GET') {
         // Extract user ID from auth header in a real app
         // Here we'll just use a default user ID
-        const result = await mockAPI.getUserEvents(2);
+        const result = mockAPI.getUserEvents(2);
         return createMockResponse(200, result);
       }
       
       if (apiPath === '/events/pending' && method === 'GET') {
-        const result = await mockAPI.getPendingEvents();
+        const result = mockAPI.getPendingEvents();
         return createMockResponse(200, result);
       }
       
@@ -302,16 +302,27 @@ export function setupMockAPI() {
       console.error('[Mock API] Error:', error);
       return createMockResponse(400, { message: error.message }, false);
     }
-  };
+  } as typeof fetch;
   
-  function createMockResponse(status: number, data: any, ok = true) {
-    return Promise.resolve({
+  function createMockResponse(status: number, data: any, ok = true): Response {
+    return {
       status,
       ok,
       json: () => Promise.resolve(data),
       text: () => Promise.resolve(JSON.stringify(data)),
-      headers: new Headers({ 'Content-Type': 'application/json' })
-    });
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      // Add the rest of the Response properties with default values
+      redirected: false,
+      statusText: ok ? 'OK' : 'Error',
+      type: 'basic',
+      url: '',
+      clone: function() { return this; },
+      body: null,
+      bodyUsed: false,
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+      blob: () => Promise.resolve(new Blob([])),
+      formData: () => Promise.resolve(new FormData())
+    } as Response;
   }
   
   console.log('[Mock API] Mock API setup complete');
