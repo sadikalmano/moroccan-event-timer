@@ -11,13 +11,15 @@ export const usersData: User[] = [
     id: '1',
     name: 'Admin User',
     email: 'admin@example.com',
-    createdAt: '2023-01-01T00:00:00.000Z'
+    createdAt: '2023-01-01T00:00:00.000Z',
+    isAdmin: true
   },
   {
     id: '2',
     name: 'Regular User',
     email: 'user@example.com',
-    createdAt: '2023-01-02T00:00:00.000Z'
+    createdAt: '2023-01-02T00:00:00.000Z',
+    isAdmin: false
   }
 ];
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -12,7 +11,7 @@ import {
   Settings, 
   User as UserIcon,
   ArrowUpRight,
-  BarChart,
+  BarChart as BarChartIcon,
   Download
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -36,7 +35,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { BarChart as Chart } from '@/components/ui/chart';
+import { BarChart } from '@/components/ui/bar-chart';
 
 // Dashboard section components
 const DashboardHome = ({ events }: { events: Event[] }) => {
@@ -152,7 +151,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
         <Card className="bg-[#1A1F2C] text-white col-span-1">
           <CardHeader className="flex flex-row justify-between">
             <div className="flex items-center gap-2">
-              <BarChart className="h-5 w-5 text-[#36DFBF]" />
+              <BarChartIcon className="h-5 w-5 text-[#36DFBF]" />
               <CardTitle className="text-lg font-medium">ROI</CardTitle>
             </div>
             <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
@@ -425,7 +424,7 @@ const Subscribers = ({ events }: { events: Event[] }) => {
                     <td className="px-6 py-4">{subscriber.name}</td>
                     <td className="px-6 py-4">{subscriber.whatsapp}</td>
                     <td className="px-6 py-4">{subscriber.eventTitle}</td>
-                    <td className="px-6 py-4">{new Date(subscriber.date).toLocaleDateString()}</td>
+                    <td className="px-6 py-4">{new Date(subscriber.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4">{subscriber.eventDate}</td>
                   </tr>
                 ))}
