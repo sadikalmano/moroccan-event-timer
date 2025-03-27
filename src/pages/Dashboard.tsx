@@ -132,7 +132,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
               18.3%
             </div>
             <div className="h-full">
-              <Chart 
+              <BarChart 
                 categories={['10-50', '50-100', '100-150', '150-200', '200-250']}
                 series={[
                   {
