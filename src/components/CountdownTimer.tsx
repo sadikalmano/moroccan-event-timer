@@ -63,22 +63,35 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-2 text-center">
-      <div className="flex flex-col">
-        <div className="text-xl font-semibold">{formatNumber(timeLeft.days)}</div>
-        <div className="text-xs text-muted-foreground">{t('common.days')}</div>
-      </div>
-      <div className="flex flex-col">
-        <div className="text-xl font-semibold">{formatNumber(timeLeft.hours)}</div>
-        <div className="text-xs text-muted-foreground">{t('common.hours')}</div>
-      </div>
-      <div className="flex flex-col">
-        <div className="text-xl font-semibold">{formatNumber(timeLeft.minutes)}</div>
-        <div className="text-xs text-muted-foreground">{t('common.minutes')}</div>
-      </div>
-      <div className="flex flex-col">
-        <div className="text-xl font-semibold">{formatNumber(timeLeft.seconds)}</div>
-        <div className="text-xs text-muted-foreground">{t('common.seconds')}</div>
+    <div className="w-full">
+      <div className="grid grid-cols-4 gap-4">
+        <div className="flex flex-col items-center">
+          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
+            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.days)}</span>
+          </div>
+          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.days')}</div>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
+            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.hours)}</span>
+          </div>
+          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.hours')}</div>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
+            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.minutes)}</span>
+          </div>
+          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.minutes')}</div>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
+            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.seconds)}</span>
+          </div>
+          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.seconds')}</div>
+        </div>
       </div>
     </div>
   );

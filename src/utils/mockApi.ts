@@ -1,260 +1,179 @@
-// This file is now a client-side utility for making API requests
-// instead of direct database connections
+import { eventsData, usersData } from './data';
+import { Event, User, EventSubscriber } from '../types';
 
-import { events } from '../data/events';
-import { Event, EventSubscriber } from '../types';
+// Utility function to match a route
+const matchRoute = (url: string, routePattern: RegExp) => {
+  const match = url.match(routePattern);
+  return match ? match : null;
+};
 
-// Mock database for users
-let users = [
-  {
-    id: '1',
-    name: 'Admin User',
-    email: 'admin@example.com',
-    password: 'password123', // In a real app, this would be hashed
-    organization: 'Moroccan Tourism Board',
-    isAdmin: true
-  },
-  {
-    id: '2',
-    name: 'Regular User',
-    email: 'user@example.com',
-    password: 'password123', // In a real app, this would be hashed
-    organization: 'Local Event Planner',
-    isAdmin: false
-  }
-];
+// Utility function to generate a unique ID
+const generateId = () => {
+  return Math.random().toString(36).substring(2, 15);
+};
 
-// Add subscribers data to events
-let mockEvents = events.map(event => ({
-  ...event,
-  subscribers: []
-}));
+// Define mock API functions
+export const setupMockAPI = () => {
+  // Mock the fetch API
+  const originalFetch = window.fetch;
+  window.fetch = async (resource: RequestInfo | URL, init?: RequestInit) => {
+    try {
+      const url = typeof resource === 'string' 
+        ? resource 
+        : resource instanceof Request 
+          ? resource.url 
+          : resource.toString();
 
-export function setupMockAPI() {
-  if (typeof window === 'undefined') return;
+      if (url.includes('/api/events') && !url.includes('/api/events/') && !init?.method) {
+        // Handle GET /api/events endpoint
+        const urlParams = new URLSearchParams(url.split('?')[1]);
+        const search = urlParams.get('search') || '';
+        const city = urlParams.get('city') || '';
+        const category = urlParams.get('category') || '';
+        const sortBy = urlParams.get('sortBy') || 'newest';
 
-  const mockApiHandlers = [
-    // Auth endpoints
-    {
-      url: '/api/auth/login',
-      method: 'POST',
-      handler: (request: Request) => {
-        return request.json().then(data => {
-          const { email, password } = data;
-          const user = users.find(u => u.email === email && u.password === password);
-          
-          if (user) {
-            const { password, ...userWithoutPassword } = user;
-            return new Response(JSON.stringify({
-              user: userWithoutPassword,
-              token: 'mock-jwt-token'
-            }), { status: 200 });
-          } else {
-            return new Response(JSON.stringify({ message: 'Invalid email or password' }), { status: 401 });
-          }
-        });
-      }
-    },
-    {
-      url: '/api/auth/register',
-      method: 'POST',
-      handler: (request: Request) => {
-        return request.json().then(data => {
-          const { name, email, password, organization } = data;
-          
-          if (users.some(u => u.email === email)) {
-            return new Response(JSON.stringify({ message: 'Email already in use' }), { status: 400 });
-          }
-          
-          const newUser = {
-            id: (users.length + 1).toString(),
-            name,
-            email,
-            password,
-            organization,
-            isAdmin: false
-          };
-          
-          users.push(newUser);
-          
-          const { password: _, ...userWithoutPassword } = newUser;
-          
-          return new Response(JSON.stringify({
-            user: userWithoutPassword,
-            token: 'mock-jwt-token'
-          }), { status: 201 });
-        });
-      }
-    },
-    
-    // Events endpoints
-    {
-      url: '/api/events',
-      method: 'GET',
-      handler: (request: Request) => {
-        const url = new URL(request.url);
-        const search = url.searchParams.get('search')?.toLowerCase() || '';
-        const city = url.searchParams.get('city') || '';
-        const category = url.searchParams.get('category') || '';
-        const sortBy = url.searchParams.get('sortBy') || 'newest';
-        
-        let filteredEvents = [...mockEvents].filter(event => event.status === 'approved');
-        
-        if (search) {
-          filteredEvents = filteredEvents.filter(event => 
-            event.title.toLowerCase().includes(search) || 
-            event.subtitle.toLowerCase().includes(search) ||
-            event.description.toLowerCase().includes(search)
-          );
-        }
-        
-        if (city) {
-          filteredEvents = filteredEvents.filter(event => event.city === city);
-        }
-        
-        if (category) {
-          filteredEvents = filteredEvents.filter(event => event.category === category);
-        }
-        
-        if (sortBy === 'newest') {
-          filteredEvents.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        } else if (sortBy === 'closest') {
-          const now = new Date().getTime();
-          filteredEvents.sort((a, b) => {
-            const timeToA = new Date(a.startDate).getTime() - now;
-            const timeToB = new Date(b.startDate).getTime() - now;
-            return timeToA - timeToB;
-          });
-          filteredEvents = filteredEvents.filter(event => new Date(event.startDate) > new Date());
+        let filteredEvents = eventsData.filter(event =>
+          event.title.toLowerCase().includes(search.toLowerCase()) &&
+          (city === '' || event.city === city) &&
+          (category === '' || event.category === category)
+        );
+
+        if (sortBy === 'closest') {
+          filteredEvents.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
         } else if (sortBy === 'popular') {
           filteredEvents.sort((a, b) => (b.subscribers?.length || 0) - (a.subscribers?.length || 0));
-        }
-        
-        return new Response(JSON.stringify(filteredEvents), { status: 200 });
-      }
-    },
-    {
-      url: '/api/events/user',
-      method: 'GET',
-      handler: (request: Request) => {
-        // In a real app, this would filter by the authenticated user's ID
-        // For mock purposes, we'll just return all events for the second user
-        const userEvents = mockEvents.filter(event => event.organizer === users[1].organization);
-        return new Response(JSON.stringify(userEvents), { status: 200 });
-      }
-    },
-    {
-      url: new RegExp('/api/events/\\d+$'),
-      method: 'GET',
-      handler: (request: Request) => {
-        const eventId = request.url.split('/').pop();
-        const event = mockEvents.find(e => e.id === eventId);
-        
-        if (event) {
-          return new Response(JSON.stringify(event), { status: 200 });
         } else {
-          return new Response(JSON.stringify({ message: 'Event not found' }), { status: 404 });
+          filteredEvents.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         }
-      }
-    },
-    {
-      url: new RegExp('/api/events/\\d+/subscribe$'),
-      method: 'POST',
-      handler: (request: Request) => {
-        const eventId = request.url.split('/')[3];
-        
-        return request.json().then(data => {
-          const { name, whatsapp } = data;
-          
-          if (!name || !whatsapp) {
-            return new Response(JSON.stringify({ message: 'Name and WhatsApp number are required' }), { status: 400 });
-          }
-          
-          const eventIndex = mockEvents.findIndex(e => e.id === eventId);
-          
-          if (eventIndex === -1) {
-            return new Response(JSON.stringify({ message: 'Event not found' }), { status: 404 });
-          }
-          
-          const newSubscriber: EventSubscriber = {
-            id: Date.now().toString(),
-            name,
-            whatsapp,
-            eventId,
-            createdAt: new Date().toISOString()
-          };
-          
-          // Add subscriber to the event
-          mockEvents[eventIndex] = {
-            ...mockEvents[eventIndex],
-            subscribers: [...(mockEvents[eventIndex].subscribers || []), newSubscriber]
-          };
-          
-          return new Response(JSON.stringify(mockEvents[eventIndex]), { status: 200 });
-        });
-      }
-    },
-    // Migrations endpoint
-    {
-      url: '/api/migrations/run',
-      method: 'POST',
-      handler: () => {
-        // Simulate migrations
-        const success = Math.random() > 0.2; // 80% chance of success
-        
-        if (success) {
-          return new Response(JSON.stringify({ 
-            success: true, 
-            message: 'Database migrations completed successfully!',
-            details: 'Created tables: users, events, event_subscribers'
-          }), { status: 200 });
-        } else {
-          return new Response(JSON.stringify({ 
-            success: false, 
-            message: 'Failed to complete migrations.',
-            error: 'Database connection error'
-          }), { status: 500 });
-        }
-      }
-    }
-  ];
 
-  // Create a mock fetch implementation that intercepts requests to our API
-  const originalFetch = window.fetch;
-  window.fetch = async function(input: RequestInfo | URL, init?: RequestInit) {
-    const request = new Request(typeof input === 'string' ? input : input.url, init);
-    const url = new URL(request.url, window.location.origin);
-    
-    // Only intercept requests to our mock API
-    if (url.pathname.startsWith('/api')) {
-      console.log(`[Mock API] ${request.method} ${url.pathname}`);
-      
-      // Find a matching handler
-      const handler = mockApiHandlers.find(h => {
-        if (typeof h.url === 'string') {
-          return h.url === url.pathname && h.method === request.method;
-        } else if (h.url instanceof RegExp) {
-          return h.url.test(url.pathname) && h.method === request.method;
+        return new Response(JSON.stringify(filteredEvents), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else if (url.match(/\/api\/events\/\w+$/) && !init?.method) {
+        // Handle GET /api/events/:id endpoint
+        const eventId = url.split('/').pop();
+        const event = eventsData.find(event => event.id === eventId);
+
+        if (event) {
+          return new Response(JSON.stringify(event), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        } else {
+          return new Response(JSON.stringify({ message: 'Event not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          });
         }
-        return false;
-      });
-      
-      if (handler) {
-        try {
-          const response = await handler.handler(request);
-          console.log(`[Mock API] Response:`, response);
-          return response;
-        } catch (error) {
-          console.error('[Mock API] Error:', error);
-          return new Response(JSON.stringify({ message: 'Server error' }), { status: 500 });
+      } else if (url.includes('/api/events/') && url.includes('/subscribe') && init?.method === 'POST') {
+        // Handle POST /api/events/:id/subscribe endpoint
+        const eventId = url.split('/')[3];
+        const eventIndex = eventsData.findIndex(event => event.id === eventId);
+
+        if (eventIndex === -1) {
+          return new Response(JSON.stringify({ error: 'Event not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          });
         }
+
+        const event = eventsData[eventIndex];
+        const subscriberData = JSON.parse(init?.body as string);
+
+        if (!subscriberData.name || !subscriberData.whatsapp) {
+          return new Response(JSON.stringify({ error: 'Name and WhatsApp are required' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        const newSubscriber: EventSubscriber = {
+          id: generateId(),
+          name: subscriberData.name,
+          whatsapp: subscriberData.whatsapp,
+          eventId: eventId,
+          createdAt: new Date().toISOString(),
+        };
+
+        if (!event.subscribers) {
+          event.subscribers = [];
+        }
+        event.subscribers.push(newSubscriber);
+        eventsData[eventIndex] = event;
+
+        return new Response(JSON.stringify(event), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else if (url.includes('/api/events') && init?.method === 'POST') {
+        // Handle POST /api/events endpoint
+        const eventData = JSON.parse(init?.body as string);
+        const newEvent: Event = {
+          id: generateId(),
+          ...eventData,
+          createdAt: new Date().toISOString(),
+          status: 'pending',
+          subscribers: [],
+        };
+        eventsData.push(newEvent);
+        return new Response(JSON.stringify(newEvent), {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else if (url.includes('/api/user/events') && !init?.method) {
+        // Handle GET /api/user/events endpoint
+        // Assuming you want to fetch all events for a specific user
+        const userId = '1'; // Replace with actual user ID if needed
+        const userEvents = eventsData.filter(event => event.organizer === userId);
+        return new Response(JSON.stringify(userEvents), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else if (url.includes('/api/pending-events') && !init?.method) {
+        // Handle GET /api/pending-events endpoint
+        const pendingEvents = eventsData.filter(event => event.status === 'pending');
+        return new Response(JSON.stringify(pendingEvents), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else if (url.includes('/api/events/') && url.includes('/status') && init?.method === 'PATCH') {
+        // Handle PATCH /api/events/:id/status endpoint
+        const eventId = url.split('/')[3];
+        const eventIndex = eventsData.findIndex(event => event.id === eventId);
+
+        if (eventIndex === -1) {
+          return new Response(JSON.stringify({ error: 'Event not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        const event = eventsData[eventIndex];
+        const statusData = JSON.parse(init?.body as string);
+        event.status = statusData.status;
+        eventsData[eventIndex] = event;
+
+        return new Response(JSON.stringify(event), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else if (url.includes('/api/migrations') && init?.method === 'POST') {
+         // Simulate a successful migration
+         return new Response(JSON.stringify({ success: true, message: 'Migration completed successfully' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else {
+        // If we don't have a mock for this endpoint, pass through to the original fetch
+        return originalFetch(resource, init);
       }
-      
-      console.warn(`[Mock API] No handler for ${request.method} ${url.pathname}`);
-      return new Response(JSON.stringify({ message: 'Not found' }), { status: 404 });
+    } catch (error) {
+      console.error('Mock API error:', error);
+      return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
-    
-    // Pass through all other requests
-    return originalFetch(input, init);
   };
-}
+};

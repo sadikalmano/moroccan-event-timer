@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -39,4 +40,28 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Countdown timer styling */
+.countdown-block {
+  background-color: #1A1F2C;
+  border-radius: 0.5rem;
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.countdown-number {
+  color: #ea384c;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.countdown-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
 }

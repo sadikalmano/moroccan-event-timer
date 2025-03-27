@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Calendar, MapPin, Clock, User, Users } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { getEventById } from '../services/eventService';
+import { getEventById, subscribeToEvent } from '../services/eventService';
 import { Event } from '../types';
 import CountdownTimer from '../components/CountdownTimer';
 import { Button } from '@/components/ui/button';
