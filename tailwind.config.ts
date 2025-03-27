@@ -21,6 +21,14 @@ export default {
         serif: ['Georgia', 'serif'],
       },
       colors: {
+        // Custom color palette
+        accent1: "#74F4F2",  // Teal
+        accent2: "#E3E5F4",  // Light blue/gray
+        dark1: "#222531",    // Darkest blue
+        dark2: "#2E3248",    // Dark blue
+        dark3: "#3C4255",    // Medium blue
+        
+        // Theme variables
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

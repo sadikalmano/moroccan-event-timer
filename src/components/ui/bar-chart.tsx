@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface BarChartProps {
   categories?: string[];
@@ -29,9 +30,15 @@ interface BarChartProps {
 export const BarChart = ({
   categories = [],
   series,
-  colors = ["#36DFBF"],
+  colors = ["#74F4F2"], // Use our accent teal color as default
   className
 }: BarChartProps) => {
+  const { theme } = useTheme();
+  
+  // Set theme-specific colors
+  const gridColor = theme === 'dark' ? '#3C4255' : '#E3E5F4';
+  const textColor = theme === 'dark' ? '#E3E5F4' : '#2E3248';
+  
   // Transform the series data into a format that Recharts can use
   const data = series[0].data.map((value, index) => {
     const category = categories[index] || `Item ${index + 1}`;
@@ -51,21 +58,21 @@ export const BarChart = ({
       className={className}
     >
       <RechartsBarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" />
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
         <XAxis 
           dataKey="category" 
-          tick={{ fill: "#9CA3AF" }} 
-          axisLine={{ stroke: "#333" }}
+          tick={{ fill: textColor }} 
+          axisLine={{ stroke: gridColor }}
         />
         <YAxis 
-          tick={{ fill: "#9CA3AF" }} 
-          axisLine={{ stroke: "#333" }}
+          tick={{ fill: textColor }} 
+          axisLine={{ stroke: gridColor }}
         />
         <Tooltip 
           content={({ active, payload }) => {
             if (active && payload && payload.length) {
               return (
-                <div className="bg-black/80 text-white p-2 rounded shadow-lg border border-gray-700">
+                <div className="bg-popover text-popover-foreground p-2 rounded shadow-lg border border-border">
                   <p className="font-medium">{`${payload[0].name}: ${payload[0].value}`}</p>
                 </div>
               );
