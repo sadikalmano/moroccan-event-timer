@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -12,11 +13,14 @@ import {
   User as UserIcon,
   ArrowUpRight,
   BarChart as BarChartIcon,
-  Download
+  Download,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { getUserEvents } from '../services/eventService';
 import { Event } from '../types';
 import { analyticsData } from '../utils/data';
@@ -63,7 +67,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
               className="pl-10 bg-background/50 border-muted w-64"
             />
           </div>
-          <Button className="bg-[#36DFBF] hover:bg-[#2bc9ab] text-black">
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
             Get the extension
           </Button>
         </div>
@@ -71,7 +75,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Website Traffic Card */}
-        <Card className="bg-[#F1F3F9] text-[#1A1F2C]">
+        <Card>
           <CardHeader className="flex flex-row justify-between items-center pb-2">
             <CardTitle className="text-lg font-medium">Website traffic</CardTitle>
             <span className="text-sm">Today</span>
@@ -110,48 +114,48 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
         {/* Center Card - Placeholder for Image */}
         <Card className="bg-gradient-to-br from-[#7E69AB] to-[#6E59A5] text-white overflow-hidden relative">
           <CardContent className="flex flex-col items-center justify-center h-full p-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#F76AD2]/30 to-[#36DFBF]/30 mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#F76AD2]/30 to-primary/30 mix-blend-overlay"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-full h-full bg-[url('/lovable-uploads/8f020028-dc1b-4e5e-b17d-93a2d60f787a.png')] bg-center bg-cover opacity-40"></div>
             </div>
             <div className="relative z-10 mt-auto">
-              <Button variant="outline" className="bg-[#1A1F2C]/60 backdrop-blur-sm text-white border-white/20 hover:bg-[#1A1F2C]/80">
+              <Button variant="outline" className="backdrop-blur-sm text-white border-white/20 hover:bg-secondary/80">
                 Webscore with AI
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Revenue Card */}
-        <Card className="bg-[#1A1F2C] text-white">
+        {/* Revenue Card - Fixed width issue */}
+        <Card className="bg-card dark:bg-[#1A1F2C] dark:text-white">
           <CardHeader>
             <CardTitle className="text-lg font-medium">Avg. Order Revenue</CardTitle>
           </CardHeader>
           <CardContent className="h-[200px] relative">
-            <div className="absolute top-0 right-0 bg-white text-[#1A1F2C] px-2 py-1 rounded-full text-xs font-medium">
+            <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium">
               18.3%
             </div>
-            <div className="h-full">
+            <div className="h-full w-full">
               <BarChart 
                 categories={['10-50', '50-100', '100-150', '150-200', '200-250']}
                 series={[
                   {
                     name: "Revenue",
-                    data: [15, 25, 10, 18, 29, 12, 15, 18, 10, 12, 25, 30]
+                    data: [15, 25, 10, 18, 29]
                   }
                 ]}
                 colors={["#36DFBF"]}
-                className="h-full"
+                className="h-full w-full"
               />
             </div>
           </CardContent>
         </Card>
 
         {/* ROI Card */}
-        <Card className="bg-[#1A1F2C] text-white col-span-1">
+        <Card className="bg-card dark:bg-[#1A1F2C] dark:text-white col-span-1">
           <CardHeader className="flex flex-row justify-between">
             <div className="flex items-center gap-2">
-              <BarChartIcon className="h-5 w-5 text-[#36DFBF]" />
+              <BarChartIcon className="h-5 w-5 text-primary" />
               <CardTitle className="text-lg font-medium">ROI</CardTitle>
             </div>
             <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
@@ -160,14 +164,15 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              <h3 className="text-5xl font-bold text-[#36DFBF]">{analyticsData.roi.value}</h3>
+              <h3 className="text-5xl font-bold text-primary">{analyticsData.roi.value}</h3>
               <p className="text-sm text-muted-foreground">{analyticsData.roi.label}</p>
               <div className="h-20 mt-4">
                 <svg viewBox="0 0 200 50" className="w-full h-full">
                   <path 
                     d="M0,40 L20,42 L40,38 L60,35 L80,30 L100,28 L120,20 L140,15 L160,10 L180,5 L200,10" 
                     fill="none" 
-                    stroke="#36DFBF" 
+                    stroke="currentColor" 
+                    className="text-primary"
                     strokeWidth="2"
                   />
                   <path 
@@ -177,8 +182,8 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
                   />
                   <defs>
                     <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#36DFBF" stopOpacity="0.5" />
-                      <stop offset="100%" stopColor="#36DFBF" stopOpacity="0" />
+                      <stop offset="0%" stopColor="currentColor" stopOpacity="0.5" className="text-primary" />
+                      <stop offset="100%" stopColor="currentColor" stopOpacity="0" className="text-primary" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -188,7 +193,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
         </Card>
 
         {/* Bounce Rate Card */}
-        <Card className="bg-[#F1F3F9] text-[#1A1F2C]">
+        <Card>
           <CardHeader className="flex flex-row justify-between items-center">
             <CardTitle className="text-lg font-medium">Bounce Rate</CardTitle>
             <Button variant="ghost" size="sm" className="p-0">
@@ -201,7 +206,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
                 <div 
                   key={index} 
                   className={`flex-1 text-center p-2 rounded-lg ${
-                    index === 1 ? 'bg-[#1A1F2C] text-white' : 'bg-gray-100'
+                    index === 1 ? 'bg-secondary dark:bg-[#1A1F2C] dark:text-white' : 'bg-muted/50'
                   }`}
                 >
                   <div className="text-xs">{day.day}</div>
@@ -209,10 +214,10 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
                 </div>
               ))}
             </div>
-            <div className="bg-[#1A1F2C] text-white p-4 rounded-lg">
+            <div className="bg-secondary dark:bg-[#1A1F2C] dark:text-white p-4 rounded-lg">
               <div className="flex items-end gap-2">
                 <span className="text-5xl font-bold">{analyticsData.bounceRate.value}</span>
-                <span className="text-[#36DFBF] text-sm">{analyticsData.bounceRate.increase}</span>
+                <span className="text-primary text-sm">{analyticsData.bounceRate.increase}</span>
               </div>
               <p className="text-sm text-muted-foreground">{analyticsData.bounceRate.since}</p>
             </div>
@@ -220,7 +225,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
         </Card>
 
         {/* Report Card */}
-        <Card className="bg-white text-[#1A1F2C] overflow-hidden">
+        <Card className="overflow-hidden">
           <CardContent className="p-0 h-full relative">
             <img 
               src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
@@ -228,7 +233,7 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-0 left-0 right-0 p-4">
-              <Button className="w-full bg-[#1A1F2C]/80 backdrop-blur-sm hover:bg-[#1A1F2C]">
+              <Button className="w-full bg-secondary/80 backdrop-blur-sm hover:bg-secondary dark:bg-[#1A1F2C]/80 dark:hover:bg-[#1A1F2C]">
                 <Download className="mr-2 h-4 w-4" />
                 Download Weekly Report
               </Button>
@@ -519,6 +524,7 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { theme, toggleTheme } = useTheme();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
@@ -555,9 +561,9 @@ const Dashboard: React.FC = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-[#1A1F2C] text-white">
+      <div className="flex min-h-screen bg-background text-foreground">
         {/* Sidebar */}
-        <Sidebar variant="sidebar" className="bg-[#1A1F2C] border-r border-white/10">
+        <Sidebar variant="sidebar" className="border-r border-border">
           <SidebarHeader className="py-6 flex flex-col items-center justify-center">
             <Avatar className="h-16 w-16 mb-2">
               <AvatarFallback className="text-xl bg-[#7E69AB] text-white">
@@ -628,16 +634,18 @@ const Dashboard: React.FC = () => {
           
           <SidebarFooter>
             <div className="flex justify-center p-4">
-              <label className="relative inline-flex cursor-pointer items-center">
-                <input
-                  type="checkbox"
-                  value=""
-                  className="peer sr-only"
-                  defaultChecked
-                />
-                <div className="h-5 w-11 rounded-full bg-gray-700 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#36DFBF] peer-checked:after:translate-x-6 peer-focus:outline-none rtl:peer-checked:after:-translate-x-6"></div>
-                <span className="ms-3 text-sm font-medium">Dark</span>
-              </label>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleTheme} 
+                className="rounded-full"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </Button>
             </div>
           </SidebarFooter>
         </Sidebar>

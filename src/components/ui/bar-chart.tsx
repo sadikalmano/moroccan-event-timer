@@ -49,43 +49,40 @@ export const BarChart = ({
   });
 
   return (
-    <ChartContainer 
-      config={{
-        [series[0].name]: {
-          color: colors[0]
-        }
-      }}
-      className={className}
-    >
-      <RechartsBarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
-        <XAxis 
-          dataKey="category" 
-          tick={{ fill: textColor }} 
-          axisLine={{ stroke: gridColor }}
-        />
-        <YAxis 
-          tick={{ fill: textColor }} 
-          axisLine={{ stroke: gridColor }}
-        />
-        <Tooltip 
-          content={({ active, payload }) => {
-            if (active && payload && payload.length) {
-              return (
-                <div className="bg-popover text-popover-foreground p-2 rounded shadow-lg border border-border">
-                  <p className="font-medium">{`${payload[0].name}: ${payload[0].value}`}</p>
-                </div>
-              );
-            }
-            return null;
-          }}
-        />
-        <Bar 
-          dataKey={series[0].name} 
-          fill={colors[0]} 
-          radius={[4, 4, 0, 0]} 
-        />
-      </RechartsBarChart>
-    </ChartContainer>
+    <div className={`w-full h-full ${className}`}>
+      <ResponsiveContainer width="100%" height="100%">
+        <RechartsBarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
+          <XAxis 
+            dataKey="category" 
+            tick={{ fill: textColor }} 
+            axisLine={{ stroke: gridColor }}
+            fontSize={10}
+          />
+          <YAxis 
+            tick={{ fill: textColor }} 
+            axisLine={{ stroke: gridColor }}
+            fontSize={10}
+          />
+          <Tooltip 
+            content={({ active, payload }) => {
+              if (active && payload && payload.length) {
+                return (
+                  <div className="bg-popover text-popover-foreground p-2 rounded shadow-lg border border-border">
+                    <p className="font-medium">{`${payload[0].name}: ${payload[0].value}`}</p>
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
+          <Bar 
+            dataKey={series[0].name} 
+            fill={colors[0]} 
+            radius={[4, 4, 0, 0]} 
+          />
+        </RechartsBarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
