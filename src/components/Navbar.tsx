@@ -6,7 +6,7 @@ import { Menu, X, Sun, Moon, Globe, User, LogOut, LogIn, UserPlus } from 'lucide
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useMobile } from '../hooks/use-mobile';
+import { useIsMobile } from '../hooks/use-mobile';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
   const { t, setLocale, locale } = useLanguage();
-  const { isMobile } = useMobile();
+  const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   
