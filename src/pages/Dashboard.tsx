@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -565,7 +566,7 @@ const DashboardSidebar = ({
 
   return (
     <div 
-      className="h-screen sticky top-0 left-0 flex flex-col bg-[#F6F8FF] dark:bg-[#1A1F2C] transition-all duration-300 ease-in-out z-10 border-r border-gray-200 dark:border-gray-800"
+      className="h-screen sticky top-0 left-0 flex flex-col bg-[#F6F8FF] dark:bg-[#1A1F2C] transition-all duration-300 ease-in-out z-10 border-r border-gray-200 dark:border-gray-800 rounded-tr-xl rounded-br-xl overflow-hidden"
       style={{ 
         width: isHovered ? '240px' : '70px',
       }}
@@ -585,12 +586,12 @@ const DashboardSidebar = ({
             onClick={item.onClick}
             className={`relative w-full flex items-center gap-4 px-4 py-3 my-1 transition-all duration-200 ease-in-out rounded-lg mx-2 ${
               activeTab === item.id 
-                ? 'bg-[#4763E4] text-white' 
+                ? 'bg-[#242c4c] text-white shadow-md' 
                 : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800'
             }`}
           >
             <div className={`flex justify-center min-w-8 ${!isHovered ? 'mx-auto' : ''}`}>
-              <item.icon size={20} />
+              <item.icon size={20} className={activeTab === item.id ? 'text-white' : ''} />
             </div>
             {isHovered && (
               <motion.span 
@@ -602,8 +603,8 @@ const DashboardSidebar = ({
                 {item.label}
               </motion.span>
             )}
-            {!isHovered && activeTab === item.id && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-l-lg" />
+            {activeTab === item.id && (
+              <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-white" />
             )}
           </button>
         ))}
