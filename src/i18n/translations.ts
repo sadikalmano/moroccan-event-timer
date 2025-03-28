@@ -1,4 +1,3 @@
-
 export type Locale = 'en' | 'fr' | 'ar';
 
 export const translations = {
@@ -32,6 +31,12 @@ export const translations = {
       cookieConsent: 'We use cookies to enhance your experience. By using this site, you accept our privacy policy.',
       accept: 'Accept',
       decline: 'Decline',
+      logout: 'Logout',
+    },
+    nav: {
+      home: 'Home',
+      about: 'About',
+      dashboard: 'Dashboard',
     },
     home: {
       title: 'Discover Morocco\'s Upcoming Events',
@@ -131,6 +136,12 @@ export const translations = {
       cookieConsent: 'Nous utilisons des cookies pour améliorer votre expérience. En utilisant ce site, vous acceptez notre politique de confidentialité.',
       accept: 'Accepter',
       decline: 'Refuser',
+      logout: 'Déconnexion',
+    },
+    nav: {
+      home: 'Accueil',
+      about: 'À propos',
+      dashboard: 'Tableau de bord',
     },
     home: {
       title: 'Découvrez les Prochains Événements au Maroc',
@@ -230,6 +241,12 @@ export const translations = {
       cookieConsent: 'نستخدم ملفات تعريف الارتباط لتحسين تجربتك. باستخدام هذا الموقع، فإنك تقبل سياسة الخصوصية الخاصة بنا.',
       accept: 'قبول',
       decline: 'رفض',
+      logout: 'تسجيل الخروج',
+    },
+    nav: {
+      home: 'الرئيسية',
+      about: 'حول',
+      dashboard: 'لوحة التحكم',
     },
     home: {
       title: 'اكتشف الفعاليات القادمة في المغرب',
@@ -246,7 +263,7 @@ export const translations = {
       description: 'العد التنازلي للفعاليات المغربية هي منصتك الرئيسية لاكتشاف وتتبع أكثر الفعاليات الثقافية والفنية والتقليدية إثارة في جميع أنحاء المغرب. مهمتنا هي ربط السكان المحليين والمسافرين بتجارب مغربية أصيلة، من المهرجانات النابضة بالحياة والمعارض إلى الاحتفالات التقليدية والتجمعات الحديثة.',
       featuresTitle: 'ميزاتنا',
       feature1Title: 'قوائم شاملة للفعاليات',
-      feature1Desc: 'اكتشف مجموعة واسعة من الفعاليات في المغرب، تم اختيارها بعناية لإظهار التراث الثقافي الغني والمشهد المعاصر للبلاد.',
+      feature1Desc: 'اكتشف مجموعة واسعة من الفعاليات في المغرب، تم اختيارها بعناية لإظهار التراث الث��افي الغني والمشهد المعاصر للبلاد.',
       feature2Title: 'عد تنازلي في الوقت الحقيقي',
       feature2Desc: 'لا تفوت أي فعالية مع موقتات العد التنازلي الدقيقة، مما يساعدك على تخطيط جدولك والاستفادة القصوى من تقويم الفعاليات النابض بالحياة في المغرب.',
       feature3Title: 'دعم متعدد اللغات',
@@ -277,7 +294,7 @@ export const translations = {
       email: 'البريد الإلكتروني',
       password: 'كلمة المرور',
       confirmPassword: 'تأكيد كلمة المرور',
-      forgotPassword: 'نسيت كلمة المرور؟',
+      forgotPassword: 'نسيت كلمة المرور?',
       noAccount: 'ليس لديك حساب؟',
       hasAccount: 'لديك حساب بالفعل؟',
       signUp: 'التسجيل',

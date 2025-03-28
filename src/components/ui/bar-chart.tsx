@@ -30,7 +30,7 @@ interface BarChartProps {
 export const BarChart = ({
   categories = [],
   series,
-  colors = ["#74F4F2"], // Use our accent teal color as default
+  colors,
   className
 }: BarChartProps) => {
   const { theme } = useTheme();
@@ -38,6 +38,10 @@ export const BarChart = ({
   // Set theme-specific colors
   const gridColor = theme === 'dark' ? '#3C4255' : '#E3E5F4';
   const textColor = theme === 'dark' ? '#E3E5F4' : '#2E3248';
+  
+  // Default colors based on theme
+  const defaultColors = theme === 'dark' ? ["#74F4F2"] : ["#242C4C"];
+  const chartColors = colors || defaultColors;
   
   // Transform the series data into a format that Recharts can use
   const data = series[0].data.map((value, index) => {
@@ -78,7 +82,7 @@ export const BarChart = ({
           />
           <Bar 
             dataKey={series[0].name} 
-            fill={colors[0]} 
+            fill={chartColors[0]} 
             radius={[4, 4, 0, 0]} 
           />
         </RechartsBarChart>

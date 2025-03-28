@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
                   `nav-link ${isActive ? 'nav-link-active' : ''}`
                 }
               >
-                {t('nav.home')}
+                {t('common.home')}
               </NavLink>
               <NavLink 
                 to="/about" 
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
                   `nav-link ${isActive ? 'nav-link-active' : ''}`
                 }
               >
-                {t('nav.about')}
+                {t('common.about')}
               </NavLink>
               {user && (
                 <NavLink 
@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
                     `nav-link ${isActive ? 'nav-link-active' : ''}`
                   }
                 >
-                  {t('nav.dashboard')}
+                  {t('common.dashboard')}
                 </NavLink>
               )}
             </div>
@@ -84,13 +84,13 @@ const Navbar: React.FC = () => {
                 <DropdownMenuLabel>{t('common.language')}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => setLocale('en')} className={locale === 'en' ? 'bg-muted' : ''}>
-                  English
+                  {t('common.english')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setLocale('fr')} className={locale === 'fr' ? 'bg-muted' : ''}>
-                  Français
+                  {t('common.french')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setLocale('ar')} className={locale === 'ar' ? 'bg-muted' : ''}>
-                  العربية
+                  {t('common.arabic')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -121,12 +121,12 @@ const Navbar: React.FC = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/dashboard">
                       <User className="mr-2 h-4 w-4" />
-                      {t('nav.dashboard')}
+                      {t('common.dashboard')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    {t('auth.logout')}
+                    {t('common.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -135,13 +135,13 @@ const Navbar: React.FC = () => {
                 <Button variant="ghost" asChild>
                   <Link to="/login">
                     <LogIn className="mr-2 h-4 w-4" />
-                    {t('auth.login')}
+                    {t('common.login')}
                   </Link>
                 </Button>
                 <Button asChild>
                   <Link to="/register">
                     <UserPlus className="mr-2 h-4 w-4" />
-                    {t('auth.register')}
+                    {t('common.register')}
                   </Link>
                 </Button>
               </div>
@@ -178,7 +178,7 @@ const Navbar: React.FC = () => {
                   `px-3 py-2 rounded-md ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`
                 }
               >
-                {t('nav.home')}
+                {t('common.home')}
               </NavLink>
               <NavLink 
                 to="/about"
@@ -186,7 +186,7 @@ const Navbar: React.FC = () => {
                   `px-3 py-2 rounded-md ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`
                 }
               >
-                {t('nav.about')}
+                {t('common.about')}
               </NavLink>
               {user && (
                 <NavLink 
@@ -195,7 +195,7 @@ const Navbar: React.FC = () => {
                     `px-3 py-2 rounded-md ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`
                   }
                 >
-                  {t('nav.dashboard')}
+                  {t('common.dashboard')}
                 </NavLink>
               )}
 
@@ -207,7 +207,7 @@ const Navbar: React.FC = () => {
                       `px-3 py-2 rounded-md ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`
                     }
                   >
-                    {t('auth.login')}
+                    {t('common.login')}
                   </NavLink>
                   <NavLink 
                     to="/register"
@@ -215,7 +215,7 @@ const Navbar: React.FC = () => {
                       `px-3 py-2 rounded-md ${isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'}`
                     }
                   >
-                    {t('auth.register')}
+                    {t('common.register')}
                   </NavLink>
                 </>
               )}
@@ -227,7 +227,7 @@ const Navbar: React.FC = () => {
                   className="justify-start"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  {t('auth.logout')}
+                  {t('common.logout')}
                 </Button>
               )}
             </div>

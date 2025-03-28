@@ -30,8 +30,8 @@ export const analyticsData = {
     increase: '18.3%',
     comparedTo: 'last week',
     sources: [
-      { name: 'Social Media', value: '71%', color: '#74F4F2' }, // Updated to use our teal color
-      { name: 'Organic Search', value: '26%', color: '#E3E5F4' } // Updated to use our light color
+      { name: 'Social Media', value: '71%', color: '#74F4F2' }, // Keep teal for dark mode
+      { name: 'Organic Search', value: '26%', color: '#E3E5F4' }
     ]
   },
   roi: {

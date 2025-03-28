@@ -5,31 +5,31 @@
 
 @layer base {
   :root {
-    /* Light theme */
+    /* Light theme - updating primary/accent from teal to dark blue */
     --background: 228 27% 92%; /* #E3E5F4 */
     --foreground: 228 35% 22%; /* #2E3248 */
     --card: 0 0% 100%;
     --card-foreground: 228 35% 22%; /* #2E3248 */
     --popover: 0 0% 100%;
     --popover-foreground: 228 35% 22%; /* #2E3248 */
-    --primary: 179 87% 70%; /* #74F4F2 */
-    --primary-foreground: 228 44% 16%; /* #222531 */
+    --primary: 230 34% 22%; /* #242C4C */
+    --primary-foreground: 0 0% 100%; /* White text on dark blue */
     --secondary: 228 27% 92%; /* #E3E5F4 */
     --secondary-foreground: 228 35% 22%; /* #2E3248 */
     --muted: 228 27% 85%;
     --muted-foreground: 228 18% 46%;
-    --accent: 179 87% 70%; /* #74F4F2 */
-    --accent-foreground: 228 44% 16%; /* #222531 */
+    --accent: 230 34% 22%; /* #242C4C */
+    --accent-foreground: 0 0% 100%; /* White text on dark blue */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 228 27% 80%;
     --input: 228 27% 80%;
-    --ring: 179 87% 70%; /* #74F4F2 */
+    --ring: 230 34% 22%; /* #242C4C */
     --radius: 1rem;
   }
  
   .dark {
-    /* Dark theme - using the provided palette */
+    /* Dark theme - keeping the same */
     --background: 228 44% 16%; /* #222531 */
     --foreground: 228 27% 92%; /* #E3E5F4 */
     --card: 228 35% 22%; /* #2E3248 */
