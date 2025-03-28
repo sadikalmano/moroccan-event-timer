@@ -16,7 +16,8 @@ import {
   Sun,
   Moon,
   Home,
-  LogOut
+  LogOut,
+  Heart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -29,18 +30,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarHeader,
-  SidebarGroup,
-  SidebarGroupContent,
-} from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart } from '@/components/ui/bar-chart';
 
@@ -509,6 +498,165 @@ const Profile = ({ user }: { user: any }) => {
   );
 };
 
+const DashboardSidebar = ({
+  activeTab,
+  setActiveTab,
+  user,
+  handleLogout,
+  toggleTheme,
+  theme
+}: {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  user: any;
+  handleLogout: () => void;
+  toggleTheme: () => void;
+  theme: string;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const menuItems = [
+    { 
+      id: "home", 
+      label: "Dashboard", 
+      icon: Home, 
+      onClick: () => setActiveTab("home") 
+    },
+    { 
+      id: "events", 
+      label: "Events", 
+      icon: Calendar, 
+      onClick: () => setActiveTab("events") 
+    },
+    { 
+      id: "create", 
+      label: "Create", 
+      icon: Plus, 
+      onClick: () => setActiveTab("create") 
+    },
+    { 
+      id: "subscribers", 
+      label: "Favorites", 
+      icon: Heart, 
+      onClick: () => setActiveTab("subscribers") 
+    },
+    { 
+      id: "profile", 
+      label: "Settings", 
+      icon: Settings, 
+      onClick: () => setActiveTab("profile") 
+    },
+  ];
+  
+  const bottomMenuItems = [
+    { 
+      id: "help", 
+      label: "Help", 
+      icon: HelpCircle, 
+      onClick: () => console.log("Help clicked") 
+    },
+    { 
+      id: "logout", 
+      label: "Logout", 
+      icon: LogOut, 
+      onClick: handleLogout
+    },
+  ];
+
+  return (
+    <div 
+      className="h-screen sticky top-0 left-0 flex flex-col bg-[#F6F8FF] dark:bg-[#1A1F2C] transition-all duration-300 ease-in-out z-10 border-r border-gray-200 dark:border-gray-800"
+      style={{ 
+        width: isHovered ? '240px' : '70px',
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="flex justify-center items-center py-6">
+        <div className="bg-[#242c4c] rounded-full h-12 w-12 flex items-center justify-center text-white">
+          <span className="text-2xl font-bold">Σ</span>
+        </div>
+      </div>
+      
+      <div className="flex-1 overflow-hidden flex flex-col items-center pt-8">
+        {menuItems.map(item => (
+          <button
+            key={item.id}
+            onClick={item.onClick}
+            className={`relative w-full flex items-center gap-4 px-4 py-3 my-1 transition-all duration-200 ease-in-out rounded-lg mx-2 ${
+              activeTab === item.id 
+                ? 'bg-[#4763E4] text-white' 
+                : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800'
+            }`}
+          >
+            <div className={`flex justify-center min-w-8 ${!isHovered ? 'mx-auto' : ''}`}>
+              <item.icon size={20} />
+            </div>
+            {isHovered && (
+              <motion.span 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                className="whitespace-nowrap overflow-hidden"
+              >
+                {item.label}
+              </motion.span>
+            )}
+            {!isHovered && activeTab === item.id && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-500 rounded-l-lg" />
+            )}
+          </button>
+        ))}
+      </div>
+      
+      <div className="pb-6 pt-4 flex flex-col items-center">
+        {bottomMenuItems.map(item => (
+          <button
+            key={item.id}
+            onClick={item.onClick}
+            className={`w-full flex items-center gap-4 px-4 py-3 my-1 transition-all duration-200 ease-in-out rounded-lg mx-2 ${
+              item.id === 'logout' ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20' : 'text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800'
+            }`}
+          >
+            <div className={`flex justify-center min-w-8 ${!isHovered ? 'mx-auto' : ''}`}>
+              <item.icon size={20} />
+            </div>
+            {isHovered && (
+              <motion.span 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+                className="whitespace-nowrap overflow-hidden"
+              >
+                {item.label}
+              </motion.span>
+            )}
+          </button>
+        ))}
+        
+        <button
+          onClick={toggleTheme}
+          className="w-full flex items-center gap-4 px-4 py-3 my-1 transition-all duration-200 ease-in-out rounded-lg mx-2 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800"
+        >
+          <div className={`flex justify-center min-w-8 ${!isHovered ? 'mx-auto' : ''}`}>
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </div>
+          {isHovered && (
+            <motion.span 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              className="whitespace-nowrap overflow-hidden"
+            >
+              {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            </motion.span>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -554,145 +702,24 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen bg-background text-foreground">
-        <Sidebar variant="sidebar" className="border-r border-border">
-          <SidebarHeader className="py-6">
-            <div className="flex items-center gap-2 px-4">
-              <div className="bg-gradient-to-r from-primary to-accent p-2 rounded-md text-white">
-                <Home className="h-5 w-5" />
-              </div>
-              <h2 className="font-bold text-xl text-gradient">Morocco Events</h2>
-            </div>
-          </SidebarHeader>
-          
-          <SidebarContent>
-            <div className="px-3 mb-4">
-              <div className="relative flex items-center">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input 
-                  placeholder="Search..." 
-                  className="pl-10 bg-background/50 border-muted h-9"
-                />
-              </div>
-            </div>
-            
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={() => setActiveTab("home")}
-                      isActive={activeTab === "home"}
-                      className="mb-1"
-                    >
-                      <Activity className="h-5 w-5" />
-                      <span>Dashboard</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={() => setActiveTab("events")}
-                      isActive={activeTab === "events"}
-                      className="mb-1"
-                    >
-                      <Calendar className="h-5 w-5" />
-                      <span>Events</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={() => setActiveTab("create")}
-                      isActive={activeTab === "create"}
-                      className="mb-1"
-                    >
-                      <Plus className="h-5 w-5" />
-                      <span>Add Event</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={() => setActiveTab("subscribers")}
-                      isActive={activeTab === "subscribers"}
-                      className="mb-1"
-                    >
-                      <UserIcon className="h-5 w-5" />
-                      <span>Clients</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-            
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={() => setActiveTab("profile")}
-                      isActive={activeTab === "profile"}
-                      className="mb-1"
-                    >
-                      <Settings className="h-5 w-5" />
-                      <span>Settings</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={handleLogout}
-                      className="mb-1 text-destructive hover:text-destructive"
-                    >
-                      <LogOut className="h-5 w-5" />
-                      <span>Logout</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-9 w-9">
-                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
-                    {user.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium truncate max-w-[120px]">{user.name}</span>
-                  <span className="text-xs text-muted-foreground truncate max-w-[120px]">{user.email}</span>
-                </div>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleTheme} 
-                className="h-8 w-8 rounded-full"
-              >
-                {theme === 'dark' ? (
-                  <Sun className="h-4 w-4" />
-                ) : (
-                  <Moon className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-          </div>
-        </Sidebar>
-        
-        <div className="flex-1 p-8 overflow-auto">
-          {activeTab === "home" && <DashboardHome events={events} />}
-          {activeTab === "events" && <EventsList events={events} />}
-          {activeTab === "create" && <CreateEvent />}
-          {activeTab === "subscribers" && <Subscribers events={events} />}
-          {activeTab === "profile" && <Profile user={user} />}
-        </div>
+    <div className="flex min-h-screen bg-background text-foreground">
+      <DashboardSidebar 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        user={user}
+        handleLogout={handleLogout}
+        toggleTheme={toggleTheme}
+        theme={theme}
+      />
+      
+      <div className="flex-1 p-8 overflow-auto">
+        {activeTab === "home" && <DashboardHome events={events} />}
+        {activeTab === "events" && <EventsList events={events} />}
+        {activeTab === "create" && <CreateEvent />}
+        {activeTab === "subscribers" && <Subscribers events={events} />}
+        {activeTab === "profile" && <Profile user={user} />}
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 

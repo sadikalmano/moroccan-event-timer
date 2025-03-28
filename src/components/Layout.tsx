@@ -15,7 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   
   // Don't show navbar/footer on dashboard
-  const isDashboard = location.pathname === '/dashboard';
+  const isDashboard = location.pathname.includes('/dashboard');
   
   // Page transition variants
   const pageVariants = {
