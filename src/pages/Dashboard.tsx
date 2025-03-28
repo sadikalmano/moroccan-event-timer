@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -15,7 +14,9 @@ import {
   BarChart as BarChartIcon,
   Download,
   Sun,
-  Moon
+  Moon,
+  Home,
+  LogOut
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -37,17 +38,17 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarHeader,
+  SidebarGroup,
+  SidebarGroupContent,
 } from "@/components/ui/sidebar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart } from '@/components/ui/bar-chart';
 
-// Dashboard section components
 const DashboardHome = ({ events }: { events: Event[] }) => {
   const pendingEvents = events.filter(event => event.status === 'pending').length;
   const approvedEvents = events.filter(event => event.status === 'approved').length;
   const totalSubscribers = events.reduce((total, event) => total + (event.subscribers?.length || 0), 0);
   
-  // Update analytics data with real event stats
   analyticsData.eventStats = {
     total: events.length,
     active: approvedEvents,
@@ -74,7 +75,6 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Website Traffic Card */}
         <Card>
           <CardHeader className="flex flex-row justify-between items-center pb-2">
             <CardTitle className="text-lg font-medium">Website traffic</CardTitle>
@@ -111,7 +111,6 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
           </CardContent>
         </Card>
 
-        {/* Center Card - Placeholder for Image */}
         <Card className="bg-gradient-to-br from-[#7E69AB] to-[#6E59A5] text-white overflow-hidden relative">
           <CardContent className="flex flex-col items-center justify-center h-full p-6">
             <div className="absolute inset-0 bg-gradient-to-br from-[#F76AD2]/30 to-primary/30 mix-blend-overlay"></div>
@@ -126,7 +125,6 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
           </CardContent>
         </Card>
 
-        {/* Revenue Card - Fixed width issue */}
         <Card className="bg-card dark:bg-[#1A1F2C] dark:text-white">
           <CardHeader>
             <CardTitle className="text-lg font-medium">Avg. Order Revenue</CardTitle>
@@ -151,7 +149,6 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
           </CardContent>
         </Card>
 
-        {/* ROI Card */}
         <Card className="bg-card dark:bg-[#1A1F2C] dark:text-white col-span-1">
           <CardHeader className="flex flex-row justify-between">
             <div className="flex items-center gap-2">
@@ -192,7 +189,6 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
           </CardContent>
         </Card>
 
-        {/* Bounce Rate Card */}
         <Card>
           <CardHeader className="flex flex-row justify-between items-center">
             <CardTitle className="text-lg font-medium">Bounce Rate</CardTitle>
@@ -224,7 +220,6 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
           </CardContent>
         </Card>
 
-        {/* Report Card */}
         <Card className="overflow-hidden">
           <CardContent className="p-0 h-full relative">
             <img 
@@ -245,7 +240,6 @@ const DashboardHome = ({ events }: { events: Event[] }) => {
   );
 };
 
-// Events list component
 const EventsList = ({ events }: { events: Event[] }) => {
   const navigate = useNavigate();
   
@@ -339,7 +333,6 @@ const EventsList = ({ events }: { events: Event[] }) => {
   );
 };
 
-// Create Event component
 const CreateEvent = () => {
   return (
     <div className="space-y-6">
@@ -394,9 +387,7 @@ const CreateEvent = () => {
   );
 };
 
-// Subscribers component
 const Subscribers = ({ events }: { events: Event[] }) => {
-  // Get all subscribers from all events
   const allSubscribers = events.flatMap(event => 
     (event.subscribers || []).map(sub => ({
       ...sub,
@@ -449,7 +440,6 @@ const Subscribers = ({ events }: { events: Event[] }) => {
   );
 };
 
-// Profile component
 const Profile = ({ user }: { user: any }) => {
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
@@ -519,9 +509,8 @@ const Profile = ({ user }: { user: any }) => {
   );
 };
 
-// Main Dashboard component
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { theme, toggleTheme } = useTheme();
@@ -559,98 +548,142 @@ const Dashboard: React.FC = () => {
     return null; // Will redirect in useEffect
   }
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background text-foreground">
-        {/* Sidebar */}
         <Sidebar variant="sidebar" className="border-r border-border">
-          <SidebarHeader className="py-6 flex flex-col items-center justify-center">
-            <Avatar className="h-16 w-16 mb-2">
-              <AvatarFallback className="text-xl bg-[#7E69AB] text-white">
-                {user.name.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="text-center">
-              <h3 className="font-medium">{user.name}</h3>
-              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground mt-1">
-                Edit profile
-              </Button>
+          <SidebarHeader className="py-6">
+            <div className="flex items-center gap-2 px-4">
+              <div className="bg-gradient-to-r from-primary to-accent p-2 rounded-md text-white">
+                <Home className="h-5 w-5" />
+              </div>
+              <h2 className="font-bold text-xl text-gradient">Morocco Events</h2>
             </div>
           </SidebarHeader>
           
           <SidebarContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={() => setActiveTab("home")}
-                  isActive={activeTab === "home"}
-                >
-                  <Activity className="h-5 w-5" />
-                  <span>Dashboard</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={() => setActiveTab("events")}
-                  isActive={activeTab === "events"}
-                >
-                  <Calendar className="h-5 w-5" />
-                  <span>Events</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={() => setActiveTab("create")}
-                  isActive={activeTab === "create"}
-                >
-                  <Plus className="h-5 w-5" />
-                  <span>Add Event</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={() => setActiveTab("subscribers")}
-                  isActive={activeTab === "subscribers"}
-                >
-                  <UserIcon className="h-5 w-5" />
-                  <span>Clients</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  onClick={() => setActiveTab("profile")}
-                  isActive={activeTab === "profile"}
-                >
-                  <Settings className="h-5 w-5" />
-                  <span>Profile</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
+            <div className="px-3 mb-4">
+              <div className="relative flex items-center">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input 
+                  placeholder="Search..." 
+                  className="pl-10 bg-background/50 border-muted h-9"
+                />
+              </div>
+            </div>
+            
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab("home")}
+                      isActive={activeTab === "home"}
+                      className="mb-1"
+                    >
+                      <Activity className="h-5 w-5" />
+                      <span>Dashboard</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab("events")}
+                      isActive={activeTab === "events"}
+                      className="mb-1"
+                    >
+                      <Calendar className="h-5 w-5" />
+                      <span>Events</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab("create")}
+                      isActive={activeTab === "create"}
+                      className="mb-1"
+                    >
+                      <Plus className="h-5 w-5" />
+                      <span>Add Event</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab("subscribers")}
+                      isActive={activeTab === "subscribers"}
+                      className="mb-1"
+                    >
+                      <UserIcon className="h-5 w-5" />
+                      <span>Clients</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab("profile")}
+                      isActive={activeTab === "profile"}
+                      className="mb-1"
+                    >
+                      <Settings className="h-5 w-5" />
+                      <span>Settings</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={handleLogout}
+                      className="mb-1 text-destructive hover:text-destructive"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      <span>Logout</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
           </SidebarContent>
           
-          <SidebarFooter>
-            <div className="flex justify-center p-4">
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                    {user.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium truncate max-w-[120px]">{user.name}</span>
+                  <span className="text-xs text-muted-foreground truncate max-w-[120px]">{user.email}</span>
+                </div>
+              </div>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={toggleTheme} 
-                className="rounded-full"
+                className="h-8 w-8 rounded-full"
               >
                 {theme === 'dark' ? (
-                  <Sun className="h-5 w-5" />
+                  <Sun className="h-4 w-4" />
                 ) : (
-                  <Moon className="h-5 w-5" />
+                  <Moon className="h-4 w-4" />
                 )}
               </Button>
             </div>
-          </SidebarFooter>
+          </div>
         </Sidebar>
         
-        {/* Main Content */}
         <div className="flex-1 p-8 overflow-auto">
           {activeTab === "home" && <DashboardHome events={events} />}
           {activeTab === "events" && <EventsList events={events} />}

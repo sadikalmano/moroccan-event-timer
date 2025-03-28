@@ -14,6 +14,9 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   
+  // Don't show navbar/footer on dashboard
+  const isDashboard = location.pathname === '/dashboard';
+  
   // Page transition variants
   const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -25,7 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <>
       <MetaTags />
       <div className="flex flex-col min-h-screen">
-        <Navbar />
+        {!isDashboard && <Navbar />}
         <AnimatePresence mode="wait">
           <motion.main 
             key={location.pathname}
@@ -39,7 +42,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {children}
           </motion.main>
         </AnimatePresence>
-        <Footer />
+        {!isDashboard && <Footer />}
         <CookieConsent />
       </div>
     </>
