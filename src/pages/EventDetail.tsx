@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import EventMap from '../components/EventMap';
 
 const EventDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -147,6 +148,12 @@ const EventDetail: React.FC = () => {
     );
   };
 
+  // Default coordinates (Morocco center)
+  const coordinates = {
+    lat: event.coordinates?.lat || 31.7917, 
+    lng: event.coordinates?.lng || -7.0926
+  };
+
   return (
     <div className="section-container">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -222,6 +229,19 @@ const EventDetail: React.FC = () => {
                 <p className="whitespace-pre-line">{event.description}</p>
               </div>
             </div>
+
+            <Card className="mb-10 overflow-hidden">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  {t('event.location')}
+                </CardTitle>
+                <CardDescription>{event.location}, {event.city}</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <EventMap coordinates={coordinates} locationName={`${event.location}, ${event.city}`} />
+              </CardContent>
+            </Card>
 
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -18,7 +17,8 @@ import {
   Moon,
   Home,
   LogOut,
-  Heart
+  Heart,
+  MapPin
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
@@ -33,6 +33,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart } from '@/components/ui/bar-chart';
+import MapInput from '../components/MapInput';
 
 const DashboardHome = ({ events }: { events: Event[] }) => {
   const pendingEvents = events.filter(event => event.status === 'pending').length;
@@ -324,6 +325,14 @@ const EventsList = ({ events }: { events: Event[] }) => {
 };
 
 const CreateEvent = () => {
+  const [location, setLocation] = useState('');
+  const [mapCoordinates, setMapCoordinates] = useState({ lat: 31.7917, lng: -7.0926 }); // Default to Morocco center
+
+  const handleLocationSelect = (locationData: { address: string, coordinates: { lat: number, lng: number } }) => {
+    setLocation(locationData.address);
+    setMapCoordinates(locationData.coordinates);
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Create New Event</h2>
@@ -354,6 +363,14 @@ const CreateEvent = () => {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Location</label>
                 <Input placeholder="Enter location" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-sm font-medium">Map Location</label>
+                <MapInput 
+                  onLocationSelect={handleLocationSelect} 
+                  initialValue={location}
+                  initialCoordinates={mapCoordinates}
+                />
               </div>
               <div className="space-y-2 md:col-span-2">
                 <label className="text-sm font-medium">Description</label>
@@ -669,20 +686,22 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function loadUserEvents() {
-      if (!user) {
-        navigate('/login');
-        return;
-      }
-
       try {
         setLoading(true);
-        const userEvents = await getUserEvents(user.id);
-        setEvents(userEvents);
+        // If user is logged in, fetch their events, otherwise use sample data
+        if (user) {
+          const userEvents = await getUserEvents(user.id);
+          setEvents(userEvents);
+        } else {
+          // Use sample events data instead of redirecting
+          const sampleEvents = await getUserEvents('sample');
+          setEvents(sampleEvents);
+        }
       } catch (error) {
-        console.error('Error loading user events:', error);
+        console.error('Error loading events:', error);
         toast({
           title: "Error",
-          description: "Failed to load your events",
+          description: "Failed to load events",
           variant: "destructive",
         });
       } finally {
@@ -691,14 +710,12 @@ const Dashboard: React.FC = () => {
     }
 
     loadUserEvents();
-  }, [user, navigate, toast]);
-
-  if (!user) {
-    return null; // Will redirect in useEffect
-  }
+  }, [user, toast]);
 
   const handleLogout = () => {
-    logout();
+    if (user) {
+      logout();
+    }
     navigate('/login');
   };
 
@@ -707,7 +724,7 @@ const Dashboard: React.FC = () => {
       <DashboardSidebar 
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        user={user}
+        user={user || { name: 'Guest User', email: 'guest@example.com', id: 'guest' }}
         handleLogout={handleLogout}
         toggleTheme={toggleTheme}
         theme={theme}
@@ -718,7 +735,7 @@ const Dashboard: React.FC = () => {
         {activeTab === "events" && <EventsList events={events} />}
         {activeTab === "create" && <CreateEvent />}
         {activeTab === "subscribers" && <Subscribers events={events} />}
-        {activeTab === "profile" && <Profile user={user} />}
+        {activeTab === "profile" && <Profile user={user || { name: 'Guest User', email: 'guest@example.com', id: 'guest' }} />}
       </div>
     </div>
   );

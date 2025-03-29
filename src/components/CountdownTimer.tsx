@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface CountdownTimerProps {
   targetDate: string | number | Date;
@@ -15,6 +16,7 @@ interface TimeLeft {
 
 const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
   const { t } = useLanguage();
+  const { theme } = useTheme();
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -62,35 +64,41 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
     return num < 10 ? `0${num}` : num.toString();
   };
 
+  const isDark = theme === 'dark';
+
   return (
     <div className="w-full">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-2 md:gap-4">
         <div className="flex flex-col items-center">
-          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
-            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.days)}</span>
+          <div className={`${isDark ? 'bg-[#1A1F2C]' : 'bg-[#242C4C]'} rounded-lg w-full aspect-square flex items-center justify-center shadow-md relative overflow-hidden`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+            <span className={`${isDark ? 'text-primary' : 'text-white'} text-2xl md:text-3xl font-bold z-10`}>{formatNumber(timeLeft.days)}</span>
           </div>
-          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.days')}</div>
+          <div className="text-xs md:text-sm text-foreground/70 mt-2 uppercase font-medium">{t('common.days')}</div>
         </div>
         
         <div className="flex flex-col items-center">
-          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
-            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.hours)}</span>
+          <div className={`${isDark ? 'bg-[#1A1F2C]' : 'bg-[#242C4C]'} rounded-lg w-full aspect-square flex items-center justify-center shadow-md relative overflow-hidden`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+            <span className={`${isDark ? 'text-primary' : 'text-white'} text-2xl md:text-3xl font-bold z-10`}>{formatNumber(timeLeft.hours)}</span>
           </div>
-          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.hours')}</div>
+          <div className="text-xs md:text-sm text-foreground/70 mt-2 uppercase font-medium">{t('common.hours')}</div>
         </div>
         
         <div className="flex flex-col items-center">
-          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
-            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.minutes)}</span>
+          <div className={`${isDark ? 'bg-[#1A1F2C]' : 'bg-[#242C4C]'} rounded-lg w-full aspect-square flex items-center justify-center shadow-md relative overflow-hidden`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+            <span className={`${isDark ? 'text-primary' : 'text-white'} text-2xl md:text-3xl font-bold z-10`}>{formatNumber(timeLeft.minutes)}</span>
           </div>
-          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.minutes')}</div>
+          <div className="text-xs md:text-sm text-foreground/70 mt-2 uppercase font-medium">{t('common.minutes')}</div>
         </div>
         
         <div className="flex flex-col items-center">
-          <div className="bg-[#1A1F2C] rounded-lg w-full aspect-square flex items-center justify-center">
-            <span className="text-[#ea384c] text-3xl md:text-4xl font-bold">{formatNumber(timeLeft.seconds)}</span>
+          <div className={`${isDark ? 'bg-[#1A1F2C]' : 'bg-[#242C4C]'} rounded-lg w-full aspect-square flex items-center justify-center shadow-md relative overflow-hidden`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+            <span className={`${isDark ? 'text-primary' : 'text-white'} text-2xl md:text-3xl font-bold z-10`}>{formatNumber(timeLeft.seconds)}</span>
           </div>
-          <div className="text-sm text-foreground/70 mt-2 uppercase">{t('common.seconds')}</div>
+          <div className="text-xs md:text-sm text-foreground/70 mt-2 uppercase font-medium">{t('common.seconds')}</div>
         </div>
       </div>
     </div>

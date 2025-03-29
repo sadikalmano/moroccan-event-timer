@@ -1,8 +1,9 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserAuth, getAuthSession, clearAuthSession, loginUser, setAuthSession } from '../services/authService';
+import { UserAuth, getAuthSession, clearAuthSession, loginUser, setAuthSession, registerUser } from '../services/authService';
 import { useToast } from '../hooks/use-toast';
+import { useMutation } from '@tanstack/react-query';
 
 interface AuthContextType {
   user: UserAuth | null;
@@ -10,6 +11,7 @@ interface AuthContextType {
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
 }
@@ -25,7 +27,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -35,10 +37,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<UserAuth | null>(initialUser);
   const [token, setToken] = useState<string | null>(initialToken);
 
-  useEffect(() => {
-    // Once we've checked for the session, set loading to false
-    setIsLoading(false);
-  }, []);
+  // Register mutation
+  const registerMutation = useMutation({
+    mutationFn: (userData: { name: string; email: string; password: string }) => 
+      registerUser(userData.name, userData.email, userData.password),
+    onSuccess: (data) => {
+      setUser(data.user);
+      setToken(data.token);
+      setAuthSession(data);
+      
+      toast({
+        title: 'Registration successful',
+        description: `Welcome, ${data.user.name}!`,
+      });
+      
+      navigate('/dashboard');
+    },
+    onError: (error: any) => {
+      setError(error.message || 'Registration failed');
+      toast({
+        title: 'Registration failed',
+        description: error.message || 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    }
+  });
 
   const login = async (email: string, password: string) => {
     try {
@@ -73,6 +96,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const register = async (name: string, email: string, password: string) => {
+    registerMutation.mutate({ name, email, password });
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -89,9 +116,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         token,
-        isLoading,
+        isLoading: isLoading || registerMutation.isPending,
         error,
         login,
+        register,
         logout,
         clearError,
       }}

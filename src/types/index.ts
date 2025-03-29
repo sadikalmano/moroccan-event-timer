@@ -1,9 +1,28 @@
 
-export interface EventSubscriber {
+export interface UserAuth {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  createdAt?: string;
+}
+
+export interface AuthSession {
+  user: UserAuth;
+  token: string;
+}
+
+export interface FilterOptions {
+  search: string;
+  city: string;
+  category: string;
+  sortBy: 'newest' | 'closest' | 'popular';
+}
+
+export interface Subscriber {
   id: string;
   name: string;
   whatsapp: string;
-  eventId: string;
   createdAt: string;
 }
 
@@ -15,27 +34,17 @@ export interface Event {
   image: string;
   startDate: string;
   endDate: string;
-  city: string;
   location: string;
-  category: string;
-  organizer: string;
-  createdAt: string;
-  status: 'pending' | 'approved' | 'rejected';
-  subscribers?: EventSubscriber[];
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  organization?: string;
-  createdAt?: string;
-  isAdmin: boolean;
-}
-
-export interface FilterOptions {
-  search: string;
   city: string;
   category: string;
-  sortBy: 'newest' | 'closest' | 'popular';
+  status: 'pending' | 'approved' | 'rejected';
+  organizer: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  subscribers?: Subscriber[];
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
