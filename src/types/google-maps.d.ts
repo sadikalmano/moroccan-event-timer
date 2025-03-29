@@ -1,111 +1,152 @@
 
-declare interface Window {
-  google: typeof google;
-}
+declare namespace google.maps {
+  class Map {
+    constructor(mapDiv: Element, opts?: MapOptions);
+    setCenter(latLng: LatLng | LatLngLiteral): void;
+    setZoom(zoom: number): void;
+    addListener(eventName: string, handler: Function): MapsEventListener;
+  }
 
-declare namespace google {
-  namespace maps {
-    class Map {
-      constructor(mapDiv: Element, opts?: MapOptions);
-      setCenter(latLng: LatLng | LatLngLiteral): void;
-      setZoom(zoom: number): void;
-      setMapTypeControl(value: boolean): void;
-      setFullscreenControl(value: boolean): void;
-      setStreetViewControl(value: boolean): void;
-      setZoomControl(value: boolean): void;
-      addListener(eventName: string, handler: Function): MapsEventListener;
-      getCenter(): LatLng;
-      getZoom(): number;
-    }
+  class Marker {
+    constructor(opts?: MarkerOptions);
+    setPosition(latLng: LatLng | LatLngLiteral): void;
+    setMap(map: Map | null): void;
+    addListener(eventName: string, handler: Function): MapsEventListener;
+    getPosition(): LatLng;
+    setAnimation(animation: Animation): void;
+  }
 
-    class LatLng {
-      constructor(lat: number, lng: number, noWrap?: boolean);
-      lat(): number;
-      lng(): number;
-    }
+  class Geocoder {
+    constructor();
+    geocode(request: GeocoderRequest, callback: (results: GeocoderResult[], status: GeocoderStatus) => void): void;
+  }
 
-    class Marker {
-      constructor(opts?: MarkerOptions);
-      setPosition(latLng: LatLng | LatLngLiteral): void;
-      setMap(map: Map | null): void;
-      setAnimation(animation: any): void;
-      setDraggable(draggable: boolean): void;
-      setTitle(title: string): void;
-      addListener(eventName: string, handler: Function): MapsEventListener;
-      getPosition(): LatLng;
-    }
+  class LatLng {
+    constructor(lat: number, lng: number, noWrap?: boolean);
+    lat(): number;
+    lng(): number;
+    toJSON(): LatLngLiteral;
+    toString(): string;
+    equals(other: LatLng): boolean;
+  }
 
-    class InfoWindow {
-      constructor(opts?: InfoWindowOptions);
-      open(map: Map, anchor?: MVCObject): void;
-      setContent(content: string | Node): void;
-    }
+  class MapsEventListener {
+    remove(): void;
+  }
 
-    class Geocoder {
-      constructor();
-      geocode(request: GeocoderRequest, callback: (results: GeocoderResult[], status: GeocoderStatus) => void): void;
-    }
+  class Autocomplete {
+    constructor(inputField: HTMLInputElement, opts?: AutocompleteOptions);
+    addListener(eventName: string, handler: Function): MapsEventListener;
+    bindTo(bindKey: string, target: any): void;
+    getPlace(): PlaceResult;
+  }
 
-    interface MapOptions {
-      center?: LatLng | LatLngLiteral;
-      zoom?: number;
-      mapTypeId?: string;
-      mapTypeControl?: boolean;
-      fullscreenControl?: boolean;
-      streetViewControl?: boolean;
-      zoomControl?: boolean;
-    }
+  interface LatLngLiteral {
+    lat: number;
+    lng: number;
+  }
 
-    interface MarkerOptions {
-      position: LatLng | LatLngLiteral;
-      map?: Map;
-      title?: string;
-      animation?: any;
-      draggable?: boolean;
-    }
+  interface MapOptions {
+    center?: LatLng | LatLngLiteral;
+    zoom?: number;
+    mapTypeId?: string;
+    mapTypeControl?: boolean;
+    streetViewControl?: boolean;
+    fullscreenControl?: boolean;
+  }
 
-    interface InfoWindowOptions {
-      content?: string | Node;
-      position?: LatLng | LatLngLiteral;
-    }
+  interface MarkerOptions {
+    position?: LatLng | LatLngLiteral;
+    map?: Map;
+    title?: string;
+    draggable?: boolean;
+    animation?: Animation;
+  }
 
-    interface GeocoderRequest {
-      address?: string;
-      location?: LatLng | LatLngLiteral;
-    }
+  interface GeocoderRequest {
+    address?: string;
+    location?: LatLng | LatLngLiteral;
+    placeId?: string;
+    bounds?: LatLngBounds;
+    region?: string;
+  }
 
-    interface GeocoderResult {
-      formatted_address: string;
-      geometry: {
-        location: LatLng;
-      };
-    }
-
-    interface LatLngLiteral {
-      lat: number;
-      lng: number;
-    }
-
-    interface MapsEventListener {
-      remove(): void;
-    }
-
-    interface MVCObject {
-      addListener(eventName: string, handler: Function): MapsEventListener;
-    }
-
-    const Animation: {
-      DROP: any;
+  interface GeocoderResult {
+    address_components: AddressComponent[];
+    formatted_address: string;
+    geometry: {
+      location: LatLng;
+      location_type: string;
+      viewport: LatLngBounds;
     };
+    place_id: string;
+    types: string[];
+  }
 
-    enum GeocoderStatus {
-      OK = 'OK',
-      ZERO_RESULTS = 'ZERO_RESULTS',
-      OVER_QUERY_LIMIT = 'OVER_QUERY_LIMIT',
-      REQUEST_DENIED = 'REQUEST_DENIED',
-      INVALID_REQUEST = 'INVALID_REQUEST',
-      UNKNOWN_ERROR = 'UNKNOWN_ERROR',
-      ERROR = 'ERROR'
-    }
+  interface AddressComponent {
+    long_name: string;
+    short_name: string;
+    types: string[];
+  }
+
+  interface AutocompleteOptions {
+    bounds?: LatLngBounds;
+    types?: string[];
+    componentRestrictions?: { country: string | string[] };
+    fields?: string[];
+  }
+
+  interface PlaceResult {
+    address_components?: AddressComponent[];
+    formatted_address?: string;
+    geometry?: {
+      location: LatLng;
+      viewport: LatLngBounds;
+    };
+    place_id?: string;
+    name?: string;
+    types?: string[];
+  }
+
+  interface LatLngBounds {
+    contains(latLng: LatLng | LatLngLiteral): boolean;
+    equals(other: LatLngBounds | LatLngBoundsLiteral): boolean;
+    extend(point: LatLng | LatLngLiteral): LatLngBounds;
+    getCenter(): LatLng;
+    getNorthEast(): LatLng;
+    getSouthWest(): LatLng;
+    isEmpty(): boolean;
+    toJSON(): LatLngBoundsLiteral;
+    toSpan(): LatLng;
+    toString(): string;
+    union(other: LatLngBounds | LatLngBoundsLiteral): LatLngBounds;
+  }
+
+  interface LatLngBoundsLiteral {
+    east: number;
+    north: number;
+    south: number;
+    west: number;
+  }
+
+  type GeocoderStatus = 
+    | 'OK'
+    | 'ZERO_RESULTS'
+    | 'OVER_QUERY_LIMIT'
+    | 'REQUEST_DENIED'
+    | 'INVALID_REQUEST'
+    | 'UNKNOWN_ERROR';
+
+  enum Animation {
+    BOUNCE = 1,
+    DROP = 2
+  }
+
+  interface MapMouseEvent {
+    latLng?: LatLng;
+  }
+
+  namespace places {
+    class Autocomplete extends google.maps.Autocomplete {}
   }
 }

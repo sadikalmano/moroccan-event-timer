@@ -33,7 +33,7 @@ export async function getEventById(id: string | number) {
   }
 }
 
-export async function createEvent(eventData: Omit<Event, 'id' | 'createdAt' | 'status'>, userId: number) {
+export async function createEvent(eventData: Omit<Event, 'id' | 'createdAt' | 'status'> | any, userId: string | number) {
   try {
     return await createEventAPI({ ...eventData, userId });
   } catch (error) {

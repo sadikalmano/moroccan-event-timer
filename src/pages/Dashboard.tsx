@@ -33,7 +33,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart } from '@/components/ui/bar-chart';
-import MapInput from '../components/MapInput';
+import CreateEventForm from '../components/CreateEventForm';
 
 const DashboardHome = ({ events }: { events: Event[] }) => {
   const pendingEvents = events.filter(event => event.status === 'pending').length;
@@ -325,73 +325,7 @@ const EventsList = ({ events }: { events: Event[] }) => {
 };
 
 const CreateEvent = () => {
-  const [location, setLocation] = useState('');
-  const [mapCoordinates, setMapCoordinates] = useState({ lat: 31.7917, lng: -7.0926 }); // Default to Morocco center
-
-  const handleLocationSelect = (locationData: { address: string, coordinates: { lat: number, lng: number } }) => {
-    setLocation(locationData.address);
-    setMapCoordinates(locationData.coordinates);
-  };
-
-  return (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold">Create New Event</h2>
-      <Card>
-        <CardContent className="pt-6">
-          <form className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Event Title</label>
-                <Input placeholder="Enter event title" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Subtitle</label>
-                <Input placeholder="Enter event subtitle" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Start Date</label>
-                <Input type="date" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">End Date</label>
-                <Input type="date" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">City</label>
-                <Input placeholder="Enter city" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Location</label>
-                <Input placeholder="Enter location" />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium">Map Location</label>
-                <MapInput 
-                  onLocationSelect={handleLocationSelect} 
-                  initialValue={location}
-                  initialCoordinates={mapCoordinates}
-                />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium">Description</label>
-                <textarea 
-                  className="w-full min-h-[100px] px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="Enter event description"
-                ></textarea>
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium">Event Image</label>
-                <Input type="file" />
-              </div>
-            </div>
-            <Button className="w-full md:w-auto bg-[#36DFBF] hover:bg-[#2bc9ab] text-black">
-              Create Event
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  return <CreateEventForm />;
 };
 
 const Subscribers = ({ events }: { events: Event[] }) => {

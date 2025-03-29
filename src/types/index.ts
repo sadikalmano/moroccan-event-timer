@@ -33,6 +33,7 @@ export interface Event {
   subtitle: string;
   description: string;
   image: string;
+  images?: string[]; // Additional images
   startDate: string;
   endDate: string;
   location: string;
@@ -57,4 +58,28 @@ export interface User {
   email: string;
   createdAt: string;
   isAdmin?: boolean;
+}
+
+// Define step interface for the event creation stepper
+export interface EventFormStep {
+  title: string;
+  description: string;
+}
+
+// Define event form data interface
+export interface EventFormData {
+  title: string;
+  subtitle: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  city: string;
+  location: string;
+  category: string;
+  organizer: string;
+  images: File[];
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
