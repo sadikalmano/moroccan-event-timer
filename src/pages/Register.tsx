@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserPlus, Mail, Lock, User, Building, AlertCircle } from 'lucide-react';
@@ -9,7 +9,7 @@ import { useToast } from '../hooks/use-toast';
 
 const Register: React.FC = () => {
   const { t } = useLanguage();
-  const { register, error, isLoading, user, clearError } = useAuth();
+  const { register, isLoading, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -24,24 +24,12 @@ const Register: React.FC = () => {
   
   const [passwordError, setPasswordError] = useState('');
   
-  useEffect(() => {
+  React.useEffect(() => {
     // If user is already logged in, redirect to dashboard
     if (user) {
       navigate('/dashboard');
     }
   }, [user, navigate]);
-  
-  useEffect(() => {
-    // Show error toast if there's an authentication error
-    if (error) {
-      toast({
-        title: t('auth.registerFailed'),
-        description: error,
-        variant: 'destructive'
-      });
-      clearError();
-    }
-  }, [error, toast, clearError, t]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -78,8 +66,9 @@ const Register: React.FC = () => {
         formData.password, 
         formData.organization || undefined
       );
-    } catch (err) {
-      // Error is handled in the auth context
+    } catch (err: any) {
+      // Error handling is now done in the auth context
+      console.error("Registration error:", err);
     }
   };
   

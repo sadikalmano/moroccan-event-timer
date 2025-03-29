@@ -20,12 +20,19 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
       headers
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'An unknown error occurred' }));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    // Check if the response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Server returned an invalid response. Please try again later.');
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return data;
   } catch (error) {
     console.error('API request error:', error);
     throw error;
