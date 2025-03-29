@@ -2,60 +2,36 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
+import { LogIn, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
 
 const Login: React.FC = () => {
   const { t } = useLanguage();
-  const { login, error, isLoading, user, clearError } = useAuth();
+  const { user, login, isLoading, error, clearError } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   
   useEffect(() => {
-    // If user is already logged in, redirect to dashboard
+    // If already logged in, redirect to dashboard
     if (user) {
-      navigate(user.isAdmin ? '/admin/dashboard' : '/dashboard');
+      navigate('/dashboard');
     }
-  }, [user, navigate]);
-  
-  useEffect(() => {
-    // Show error toast if there's an authentication error
-    if (error) {
-      toast({
-        title: t('auth.loginFailed'),
-        description: error,
-        variant: 'destructive'
-      });
-      clearError();
-    }
-  }, [error, toast, clearError, t]);
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
+    
+    // Clear any previous auth errors
+    clearError();
+  }, [user, navigate, clearError]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    try {
-      await login(formData.email, formData.password);
-    } catch (err) {
-      // Error is handled in the auth context
-    }
+    await login(email, password);
   };
-  
+
   return (
     <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <motion.div
@@ -77,9 +53,16 @@ const Login: React.FC = () => {
               </div>
             </motion.div>
             
-            <h2 className="text-2xl font-bold">{t('auth.loginTitle')}</h2>
+            <h2 className="text-2xl font-bold">{t('auth.welcomeBack')}</h2>
             <p className="text-muted-foreground mt-2">{t('auth.loginSubtitle')}</p>
           </div>
+          
+          {error && (
+            <div className="mb-6 p-3 rounded-md bg-destructive/15 text-destructive flex items-center">
+              <AlertCircle size={18} className="mr-2 shrink-0" />
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -96,18 +79,23 @@ const Login: React.FC = () => {
                   type="email"
                   autoComplete="email"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="input-field w-full pl-10"
                   placeholder="your.email@example.com"
-                  value={formData.email}
-                  onChange={handleChange}
                 />
               </div>
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
-                {t('auth.password')}
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label htmlFor="password" className="block text-sm font-medium">
+                  {t('auth.password')}
+                </label>
+                <Link to="/forgot-password" className="text-sm text-primary hover:text-primary/80">
+                  {t('auth.forgotPassword')}
+                </Link>
+              </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock size={18} className="text-muted-foreground" />
@@ -115,36 +103,24 @@ const Login: React.FC = () => {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
-                  className="input-field w-full pl-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-field w-full pl-10 pr-10"
                   placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
                 />
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="rememberMe"
-                  type="checkbox"
-                  className="h-4 w-4 text-primary focus:ring-primary"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm">
-                  {t('auth.rememberMe')}
-                </label>
-              </div>
-              
-              <div className="text-sm">
-                <a href="#" className="text-primary hover:text-primary/80">
-                  {t('auth.forgotPassword')}
-                </a>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-muted-foreground hover:text-foreground"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
             </div>
             
@@ -166,7 +142,7 @@ const Login: React.FC = () => {
             <p className="text-sm">
               {t('auth.noAccount')} {' '}
               <Link to="/register" className="text-primary hover:text-primary/80 font-medium">
-                {t('auth.signUp')}
+                {t('auth.createAccount')}
               </Link>
             </p>
           </div>

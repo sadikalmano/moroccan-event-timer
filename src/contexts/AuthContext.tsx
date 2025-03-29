@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserAuth, getAuthSession, clearAuthSession } from '../services/authService';
+import { UserAuth, getAuthSession, clearAuthSession, loginUser, setAuthSession } from '../services/authService';
 import { useToast } from '../hooks/use-toast';
 
 interface AuthContextType {
@@ -9,6 +9,7 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   error: string | null;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
 }
@@ -39,6 +40,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
+  const login = async (email: string, password: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await loginUser(email, password);
+      
+      // Save the user data and token
+      setUser(response.user);
+      setToken(response.token);
+      
+      // Store in localStorage
+      setAuthSession(response);
+      
+      // Navigate to dashboard
+      navigate('/dashboard');
+      
+      toast({
+        title: 'Login successful',
+        description: `Welcome back, ${response.user.name}!`,
+      });
+    } catch (err: any) {
+      setError(err.message || 'Login failed');
+      toast({
+        title: 'Login failed',
+        description: err.message || 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -57,6 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token,
         isLoading,
         error,
+        login,
         logout,
         clearError,
       }}

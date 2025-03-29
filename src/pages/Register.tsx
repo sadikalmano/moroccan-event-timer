@@ -249,9 +249,9 @@ const Register: React.FC = () => {
               <button
                 type="submit"
                 className="btn-primary w-full flex items-center justify-center"
-                disabled={isLoading}
+                disabled={registerMutation.isPending}
               >
-                {isLoading ? (
+                {registerMutation.isPending ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                 ) : null}
                 {t('auth.signUp')}
