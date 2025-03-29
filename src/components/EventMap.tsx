@@ -38,8 +38,8 @@ const EventMap: React.FC<EventMapProps> = ({ coordinates, locationName }) => {
       zoom: 14,
       mapTypeControl: false,
       fullscreenControl: true,
-      streetViewControl: true,
-      zoomControl: true,
+      streetViewControl: true
+      // zoomControl removed as it's not in our type definitions
     });
 
     const marker = new google.maps.Marker({
@@ -49,6 +49,7 @@ const EventMap: React.FC<EventMapProps> = ({ coordinates, locationName }) => {
       title: locationName,
     });
 
+    // Using a properly defined infoWindow
     const infoWindow = new google.maps.InfoWindow({
       content: `<div class="p-2"><strong>${locationName}</strong></div>`,
     });

@@ -16,6 +16,15 @@ declare namespace google.maps {
     setAnimation(animation: Animation): void;
   }
 
+  class InfoWindow {
+    constructor(opts?: InfoWindowOptions);
+    open(map?: Map, anchor?: Marker): void;
+    close(): void;
+    setContent(content: string | Element | Text): void;
+    setPosition(position: LatLng | LatLngLiteral): void;
+    addListener(eventName: string, handler: Function): MapsEventListener;
+  }
+
   class Geocoder {
     constructor();
     geocode(request: GeocoderRequest, callback: (results: GeocoderResult[], status: GeocoderStatus) => void): void;
@@ -39,6 +48,15 @@ declare namespace google.maps {
     addListener(eventName: string, handler: Function): MapsEventListener;
     bindTo(bindKey: string, target: any): void;
     getPlace(): PlaceResult;
+  }
+
+  interface InfoWindowOptions {
+    content?: string | Element | Text;
+    disableAutoPan?: boolean;
+    maxWidth?: number;
+    pixelOffset?: Size;
+    position?: LatLng | LatLngLiteral;
+    zIndex?: number;
   }
 
   interface LatLngLiteral {
@@ -127,6 +145,13 @@ declare namespace google.maps {
     north: number;
     south: number;
     west: number;
+  }
+
+  class Size {
+    constructor(width: number, height: number, widthUnit?: string, heightUnit?: string);
+    equals(other: Size): boolean;
+    width: number;
+    height: number;
   }
 
   type GeocoderStatus = 
