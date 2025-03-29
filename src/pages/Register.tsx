@@ -1,15 +1,17 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { UserPlus, Mail, Lock, User, Building, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
+import { useMutation } from '@tanstack/react-query';
+import { registerUser, setAuthSession } from '../services/authService';
 
 const Register: React.FC = () => {
   const { t } = useLanguage();
-  const { register, isLoading, user } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -24,7 +26,27 @@ const Register: React.FC = () => {
   
   const [passwordError, setPasswordError] = useState('');
   
-  React.useEffect(() => {
+  // React Query mutation for registration
+  const registerMutation = useMutation({
+    mutationFn: (data: { name: string; email: string; password: string; organization?: string }) => 
+      registerUser(data.name, data.email, data.password, data.organization),
+    onSuccess: (data) => {
+      // Save auth session
+      setAuthSession(data);
+      
+      // Refresh the page to update the Auth context
+      window.location.href = '/dashboard';
+    },
+    onError: (error: any) => {
+      toast({
+        title: t('auth.registerFailed'),
+        description: error.message || t('auth.unexpectedError'),
+        variant: 'destructive'
+      });
+    }
+  });
+  
+  useEffect(() => {
     // If user is already logged in, redirect to dashboard
     if (user) {
       navigate('/dashboard');
@@ -59,17 +81,13 @@ const Register: React.FC = () => {
       return;
     }
     
-    try {
-      await register(
-        formData.name, 
-        formData.email, 
-        formData.password, 
-        formData.organization || undefined
-      );
-    } catch (err: any) {
-      // Error handling is now done in the auth context
-      console.error("Registration error:", err);
-    }
+    // Execute the mutation
+    registerMutation.mutate({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      organization: formData.organization || undefined
+    });
   };
   
   return (
