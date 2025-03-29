@@ -24,6 +24,7 @@ export interface Subscriber {
   name: string;
   whatsapp: string;
   createdAt: string;
+  eventId?: string;
 }
 
 export interface Event {
@@ -47,4 +48,13 @@ export interface Event {
     lat: number;
     lng: number;
   };
+}
+
+// Add User interface for data.ts and mockApi.ts
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  isAdmin?: boolean;
 }

@@ -1,4 +1,3 @@
-
 import { Event } from '../types';
 
 export const events: Event[] = [
@@ -15,7 +14,13 @@ export const events: Event[] = [
     category: 'Cultural',
     organizer: 'Marrakech Film Festival Foundation',
     createdAt: '2024-05-15T10:30:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '1',
+    updatedAt: '2024-05-15T10:30:00.000Z',
+    coordinates: {
+      lat: 31.6295,
+      lng: -7.9811
+    }
   },
   {
     id: '2',
@@ -30,7 +35,13 @@ export const events: Event[] = [
     category: 'Music',
     organizer: 'A3 Association',
     createdAt: '2024-04-10T14:15:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '1',
+    updatedAt: '2024-04-10T14:15:00.000Z',
+    coordinates: {
+      lat: 31.5118,
+      lng: -9.7692
+    }
   },
   {
     id: '3',
@@ -45,7 +56,13 @@ export const events: Event[] = [
     category: 'Music',
     organizer: 'Fes Foundation for Culture and Sacred Arts',
     createdAt: '2024-02-25T09:45:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '2',
+    updatedAt: '2024-02-25T09:45:00.000Z',
+    coordinates: {
+      lat: 34.0181,
+      lng: -5.0078
+    }
   },
   {
     id: '4',
@@ -60,7 +77,13 @@ export const events: Event[] = [
     category: 'Fashion',
     organizer: 'Morocco Fashion Council',
     createdAt: '2024-05-02T11:20:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '1',
+    updatedAt: '2024-05-02T11:20:00.000Z',
+    coordinates: {
+      lat: 33.5731,
+      lng: -7.5898
+    }
   },
   {
     id: '5',
@@ -75,7 +98,13 @@ export const events: Event[] = [
     category: 'Music',
     organizer: 'Souss Massa Regional Council',
     createdAt: '2024-03-18T13:10:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '2',
+    updatedAt: '2024-03-18T13:10:00.000Z',
+    coordinates: {
+      lat: 30.4202,
+      lng: -9.5982
+    }
   },
   {
     id: '6',
@@ -90,7 +119,13 @@ export const events: Event[] = [
     category: 'Sports',
     organizer: 'Atlantide Organization',
     createdAt: '2024-01-05T16:30:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '1',
+    updatedAt: '2024-01-05T16:30:00.000Z',
+    coordinates: {
+      lat: 31.1021,
+      lng: -4.0143
+    }
   },
   {
     id: '7',
@@ -105,7 +140,13 @@ export const events: Event[] = [
     category: 'Food',
     organizer: 'Moroccan Culinary Arts Association',
     createdAt: '2024-04-28T10:00:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '2',
+    updatedAt: '2024-04-28T10:00:00.000Z',
+    coordinates: {
+      lat: 34.0209,
+      lng: -6.8416
+    }
   },
   {
     id: '8',
@@ -120,6 +161,12 @@ export const events: Event[] = [
     category: 'Music',
     organizer: 'TAC Cultural Association',
     createdAt: '2024-04-12T15:45:00.000Z',
-    status: 'approved'
+    status: 'approved',
+    userId: '1',
+    updatedAt: '2024-04-12T15:45:00.000Z',
+    coordinates: {
+      lat: 35.7673,
+      lng: -5.7998
+    }
   }
 ];

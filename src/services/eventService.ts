@@ -8,7 +8,7 @@ import {
   getPendingEventsAPI,
   subscribeToEventAPI
 } from '../utils/db';
-import { Event, EventSubscriber } from '../types';
+import { Event, Subscriber } from '../types';
 
 export async function getEvents(filters?: {
   search?: string, 

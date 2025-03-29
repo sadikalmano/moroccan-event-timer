@@ -1,5 +1,6 @@
+
 import { eventsData, usersData } from './data';
-import { Event, User, EventSubscriber } from '../types';
+import { Event, User, Subscriber } from '../types';
 
 // Utility function to match a route
 const matchRoute = (url: string, routePattern: RegExp) => {
@@ -88,7 +89,7 @@ export const setupMockAPI = () => {
           });
         }
 
-        const newSubscriber: EventSubscriber = {
+        const newSubscriber: Subscriber = {
           id: generateId(),
           name: subscriberData.name,
           whatsapp: subscriberData.whatsapp,
@@ -113,6 +114,7 @@ export const setupMockAPI = () => {
           id: generateId(),
           ...eventData,
           createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
           status: 'pending',
           subscribers: [],
         };
