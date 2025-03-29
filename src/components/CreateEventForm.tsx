@@ -16,6 +16,7 @@ import {
 import MapInput from './MapInput';
 import MultiImageUpload from './MultiImageUpload';
 import FormStepper from './FormStepper';
+import SocialShare from './SocialShare';
 import { EventFormData, EventFormStep } from '../types';
 import { useToast } from '@/hooks/use-toast';
 import { createEvent } from '../services/eventService';
@@ -29,6 +30,8 @@ const CreateEventForm: React.FC = () => {
   const [location, setLocation] = useState('');
   const [mapCoordinates, setMapCoordinates] = useState({ lat: 31.7917, lng: -7.0926 }); // Default to Morocco center
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createdEventId, setCreatedEventId] = useState<string | null>(null);
+  const [isCreationCompleted, setIsCreationCompleted] = useState(false);
 
   const steps: EventFormStep[] = [
     {
@@ -110,14 +113,16 @@ const CreateEventForm: React.FC = () => {
         userId: user?.id || 'guest',
       };
       
-      await createEvent(eventData, user?.id || 'guest');
+      const createdEvent = await createEvent(eventData, user?.id || 'guest');
       
       toast({
         title: "Success",
         description: "Event created successfully and is pending approval",
       });
       
-      navigate('/dashboard');
+      // Set the created event ID for sharing
+      setCreatedEventId(createdEvent.id);
+      setIsCreationCompleted(true);
     } catch (error) {
       console.error('Error creating event:', error);
       toast({
@@ -130,193 +135,235 @@ const CreateEventForm: React.FC = () => {
     }
   };
 
+  const handleGoToDashboard = () => {
+    navigate('/dashboard');
+  };
+
+  const handleViewEvent = () => {
+    if (createdEventId) {
+      navigate(`/events/${createdEventId}`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Create New Event</h2>
       
-      <FormStepper 
-        steps={steps} 
-        currentStep={currentStep} 
-        onStepClick={goToStep} 
-      />
+      {!isCreationCompleted && (
+        <FormStepper 
+          steps={steps} 
+          currentStep={currentStep} 
+          onStepClick={goToStep} 
+        />
+      )}
       
       <Card>
         <CardContent className="pt-6">
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            {currentStep === 0 && (
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="title">Event Title</Label>
-                  <Input 
-                    id="title" 
-                    placeholder="Enter event title" 
-                    {...register('title', { required: 'Event title is required' })}
-                  />
-                  {errors.title && (
-                    <p className="text-sm text-red-500">{errors.title.message}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="subtitle">Subtitle</Label>
-                  <Input 
-                    id="subtitle" 
-                    placeholder="Enter event subtitle" 
-                    {...register('subtitle')}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
-                  <Select 
-                    onValueChange={(value) => setValue('category', value)}
-                    defaultValue={formValues.category}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="conference">Conference</SelectItem>
-                      <SelectItem value="workshop">Workshop</SelectItem>
-                      <SelectItem value="networking">Networking</SelectItem>
-                      <SelectItem value="concert">Concert</SelectItem>
-                      <SelectItem value="exhibition">Exhibition</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="organizer">Organizer</Label>
-                  <Input 
-                    id="organizer" 
-                    placeholder="Enter organizer name" 
-                    {...register('organizer', { required: 'Organizer is required' })}
-                  />
-                  {errors.organizer && (
-                    <p className="text-sm text-red-500">{errors.organizer.message}</p>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {!isCreationCompleted ? (
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+              {currentStep === 0 && (
+                <div className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="startDate">Start Date</Label>
+                    <Label htmlFor="title">Event Title</Label>
                     <Input 
-                      id="startDate" 
-                      type="datetime-local" 
-                      {...register('startDate', { required: 'Start date is required' })}
+                      id="title" 
+                      placeholder="Enter event title" 
+                      {...register('title', { required: 'Event title is required' })}
                     />
-                    {errors.startDate && (
-                      <p className="text-sm text-red-500">{errors.startDate.message}</p>
+                    {errors.title && (
+                      <p className="text-sm text-red-500">{errors.title.message}</p>
                     )}
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="endDate">End Date</Label>
+                    <Label htmlFor="subtitle">Subtitle</Label>
                     <Input 
-                      id="endDate" 
-                      type="datetime-local" 
-                      {...register('endDate', { required: 'End date is required' })}
+                      id="subtitle" 
+                      placeholder="Enter event subtitle" 
+                      {...register('subtitle')}
                     />
-                    {errors.endDate && (
-                      <p className="text-sm text-red-500">{errors.endDate.message}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Category</Label>
+                    <Select 
+                      onValueChange={(value) => setValue('category', value)}
+                      defaultValue={formValues.category}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="conference">Conference</SelectItem>
+                        <SelectItem value="workshop">Workshop</SelectItem>
+                        <SelectItem value="networking">Networking</SelectItem>
+                        <SelectItem value="concert">Concert</SelectItem>
+                        <SelectItem value="exhibition">Exhibition</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="organizer">Organizer</Label>
+                    <Input 
+                      id="organizer" 
+                      placeholder="Enter organizer name" 
+                      {...register('organizer', { required: 'Organizer is required' })}
+                    />
+                    {errors.organizer && (
+                      <p className="text-sm text-red-500">{errors.organizer.message}</p>
                     )}
                   </div>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <textarea 
-                    id="description"
-                    className="w-full min-h-[150px] px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                    placeholder="Enter event description"
-                    {...register('description', { required: 'Description is required' })}
-                  />
-                  {errors.description && (
-                    <p className="text-sm text-red-500">{errors.description.message}</p>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {currentStep === 2 && (
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
-                  <Input 
-                    id="city" 
-                    placeholder="Enter city" 
-                    {...register('city', { required: 'City is required' })}
-                  />
-                  {errors.city && (
-                    <p className="text-sm text-red-500">{errors.city.message}</p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="mapLocation">Map Location</Label>
-                  <MapInput 
-                    onLocationSelect={handleLocationSelect} 
-                    initialValue={location}
-                    initialCoordinates={mapCoordinates}
-                  />
-                  {!location && (
-                    <p className="text-sm text-muted-foreground">
-                      Search for a location or click on the map to set the event location
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {currentStep === 3 && (
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label>Event Images</Label>
-                  <MultiImageUpload 
-                    onImagesChange={handleImagesChange}
-                    maxImages={5}
-                  />
-                </div>
-              </div>
-            )}
-            
-            <div className="flex justify-between pt-4">
-              {currentStep > 0 && (
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={prevStep}
-                >
-                  Previous
-                </Button>
               )}
               
-              {currentStep < steps.length - 1 && (
-                <Button 
-                  type="button" 
-                  className="ml-auto"
-                  onClick={nextStep}
-                >
-                  Next
-                </Button>
+              {currentStep === 1 && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="startDate">Start Date</Label>
+                      <Input 
+                        id="startDate" 
+                        type="datetime-local" 
+                        {...register('startDate', { required: 'Start date is required' })}
+                      />
+                      {errors.startDate && (
+                        <p className="text-sm text-red-500">{errors.startDate.message}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="endDate">End Date</Label>
+                      <Input 
+                        id="endDate" 
+                        type="datetime-local" 
+                        {...register('endDate', { required: 'End date is required' })}
+                      />
+                      {errors.endDate && (
+                        <p className="text-sm text-red-500">{errors.endDate.message}</p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description</Label>
+                    <textarea 
+                      id="description"
+                      className="w-full min-h-[150px] px-3 py-2 rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                      placeholder="Enter event description"
+                      {...register('description', { required: 'Description is required' })}
+                    />
+                    {errors.description && (
+                      <p className="text-sm text-red-500">{errors.description.message}</p>
+                    )}
+                  </div>
+                </div>
               )}
               
-              {currentStep === steps.length - 1 && (
-                <Button 
-                  type="submit"
-                  className="ml-auto bg-[#36DFBF] hover:bg-[#2bc9ab] text-black"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Creating..." : "Create Event"}
-                </Button>
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input 
+                      id="city" 
+                      placeholder="Enter city" 
+                      {...register('city', { required: 'City is required' })}
+                    />
+                    {errors.city && (
+                      <p className="text-sm text-red-500">{errors.city.message}</p>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="mapLocation">Map Location</Label>
+                    <MapInput 
+                      onLocationSelect={handleLocationSelect} 
+                      initialValue={location}
+                      initialCoordinates={mapCoordinates}
+                    />
+                    {!location && (
+                      <p className="text-sm text-muted-foreground">
+                        Search for a location or click on the map to set the event location
+                      </p>
+                    )}
+                  </div>
+                </div>
               )}
+              
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label>Event Images</Label>
+                    <MultiImageUpload 
+                      onImagesChange={handleImagesChange}
+                      maxImages={5}
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex justify-between pt-4">
+                {currentStep > 0 && (
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={prevStep}
+                  >
+                    Previous
+                  </Button>
+                )}
+                
+                {currentStep < steps.length - 1 && (
+                  <Button 
+                    type="button" 
+                    className="ml-auto"
+                    onClick={nextStep}
+                  >
+                    Next
+                  </Button>
+                )}
+                
+                {currentStep === steps.length - 1 && (
+                  <Button 
+                    type="submit"
+                    className="ml-auto bg-[#36DFBF] hover:bg-[#2bc9ab] text-black"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Creating..." : "Create Event"}
+                  </Button>
+                )}
+              </div>
+            </form>
+          ) : (
+            <div className="space-y-6 py-4">
+              <div className="text-center mb-6">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-semibold mb-2">Event Created Successfully!</h3>
+                <p className="text-muted-foreground">Your event is now pending approval by an administrator.</p>
+              </div>
+              
+              {createdEventId && (
+                <SocialShare 
+                  url={`/events/${createdEventId}`} 
+                  title={formValues.title}
+                />
+              )}
+              
+              <div className="flex gap-3 justify-center mt-6">
+                <Button variant="outline" onClick={handleGoToDashboard}>
+                  Go to Dashboard
+                </Button>
+                <Button onClick={handleViewEvent}>
+                  View Event
+                </Button>
+              </div>
             </div>
-          </form>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getEventById, subscribeToEvent } from '../services/eventService';
 import { Event } from '../types';
 import CountdownTimer from '../components/CountdownTimer';
+import SocialShare from '../components/SocialShare';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -164,16 +165,25 @@ const EventDetail: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="mb-6">
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/')}
-                className="mb-4"
-              >
-                ← {t('common.backToEvents')}
-              </Button>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">{event.title}</h1>
-              <p className="text-xl text-muted-foreground mb-6">{event.subtitle}</p>
+            <div className="mb-6 flex flex-wrap justify-between items-start">
+              <div>
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/')}
+                  className="mb-4"
+                >
+                  ← {t('common.backToEvents')}
+                </Button>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">{event.title}</h1>
+                <p className="text-xl text-muted-foreground mb-4">{event.subtitle}</p>
+              </div>
+              <div className="mt-4 md:mt-0">
+                <SocialShare 
+                  url={`/events/${event.id}`} 
+                  title={event.title} 
+                  compact 
+                />
+              </div>
             </div>
 
             <div className="relative rounded-xl overflow-hidden mb-8">
@@ -254,6 +264,10 @@ const EventDetail: React.FC = () => {
                   {event.subscribers?.length || 0} {t('event.peopleJoined')}
                 </p>
               </div>
+            </div>
+
+            <div className="mb-10">
+              <SocialShare url={`/events/${event.id}`} title={event.title} />
             </div>
           </motion.div>
         </div>
