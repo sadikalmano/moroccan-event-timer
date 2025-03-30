@@ -52,7 +52,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/migration" element={<Migration />} />
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/events/:id" element={<EventDetail />} />
+                    <Route path="/events/:slug" element={<EventDetail />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <Toaster />

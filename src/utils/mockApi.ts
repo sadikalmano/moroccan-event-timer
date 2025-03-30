@@ -13,6 +13,19 @@ const generateId = () => {
   return Math.random().toString(36).substring(2, 15);
 };
 
+// Generate a unique slug from title
+const generateSlug = (title: string): string => {
+  // Convert to lowercase, replace spaces and special chars with hyphens
+  const baseSlug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  
+  // Add a random string to ensure uniqueness
+  const randomString = Math.random().toString(36).substring(2, 6);
+  return `${baseSlug}-${randomString}`;
+};
+
 // Define mock API functions
 export const setupMockAPI = () => {
   // Mock the fetch API
@@ -51,10 +64,10 @@ export const setupMockAPI = () => {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
         });
-      } else if (url.match(/\/api\/events\/\w+$/) && !init?.method) {
-        // Handle GET /api/events/:id endpoint
-        const eventId = url.split('/').pop();
-        const event = eventsData.find(event => event.id === eventId);
+      } else if (url.match(/\/api\/events\/[a-zA-Z0-9-]+$/) && !init?.method) {
+        // Handle GET /api/events/:slug endpoint
+        const slug = url.split('/').pop();
+        const event = eventsData.find(event => event.slug === slug);
 
         if (event) {
           return new Response(JSON.stringify(event), {
@@ -70,7 +83,7 @@ export const setupMockAPI = () => {
       } else if (url.includes('/api/events/') && url.includes('/subscribe') && init?.method === 'POST') {
         // Handle POST /api/events/:id/subscribe endpoint
         const eventId = url.split('/')[3];
-        const eventIndex = eventsData.findIndex(event => event.id === eventId);
+        const eventIndex = eventsData.findIndex(event => event.id === eventId || event.slug === eventId);
 
         if (eventIndex === -1) {
           return new Response(JSON.stringify({ error: 'Event not found' }), {
@@ -93,7 +106,7 @@ export const setupMockAPI = () => {
           id: generateId(),
           name: subscriberData.name,
           whatsapp: subscriberData.whatsapp,
-          eventId: eventId,
+          eventId: event.id,
           createdAt: new Date().toISOString(),
         };
 
@@ -110,9 +123,11 @@ export const setupMockAPI = () => {
       } else if (url.includes('/api/events') && init?.method === 'POST') {
         // Handle POST /api/events endpoint
         const eventData = JSON.parse(init?.body as string);
+        const slug = generateSlug(eventData.title);
         const newEvent: Event = {
           id: generateId(),
           ...eventData,
+          slug,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           status: 'pending',

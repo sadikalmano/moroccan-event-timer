@@ -5,6 +5,19 @@ import { events as mockEvents } from '../data/events';
 // Generate a unique ID
 const generateId = () => Math.random().toString(36).substring(2, 15);
 
+// Generate a unique slug from title
+const generateSlug = (title: string): string => {
+  // Convert to lowercase, replace spaces and special chars with hyphens
+  const baseSlug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  
+  // Add a random string to ensure uniqueness
+  const randomString = Math.random().toString(36).substring(2, 6);
+  return `${baseSlug}-${randomString}`;
+};
+
 // Get all events
 export const getEvents = async (): Promise<Event[]> => {
   // In a real app, this would be an API call
@@ -44,6 +57,21 @@ export const getEventById = async (id: string): Promise<Event> => {
   });
 };
 
+// Get event by slug
+export const getEventBySlug = async (slug: string): Promise<Event> => {
+  // In a real app, this would be an API call
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const event = mockEvents.find(e => e.slug === slug);
+      if (event) {
+        resolve(event);
+      } else {
+        reject(new Error('Event not found'));
+      }
+    }, 500);
+  });
+};
+
 // Create a new event
 export const createEvent = async (eventData: Partial<Event>, userId: string): Promise<Event> => {
   // In a real app, this would be an API call to store the event
@@ -67,7 +95,8 @@ export const createEvent = async (eventData: Partial<Event>, userId: string): Pr
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         subscribers: [],
-        coordinates: eventData.coordinates
+        coordinates: eventData.coordinates,
+        slug: eventData.slug || generateSlug(eventData.title || '')
       };
       
       // In a real app, we would save this to the database
