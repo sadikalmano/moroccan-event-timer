@@ -110,7 +110,7 @@ const CreateEventForm: React.FC = () => {
         image: imageUrl,
         images,
         status: 'pending' as const,
-        userId: user?.id || 'guest',
+        userId: user?.id || 'guest', // Ensure userId is always a string
       };
       
       const createdEvent = await createEvent(eventData, user?.id || 'guest');

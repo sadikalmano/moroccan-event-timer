@@ -301,7 +301,7 @@ const EventsList = ({ events }: { events: Event[] }) => {
                       <Button 
                         size="sm" 
                         className="bg-[#1A1F2C] hover:bg-[#2d3546]"
-                        onClick={() => navigate(`/events/${event.id}`)}
+                        onClick={() => navigate(`/events/${event.slug}`)}
                       >
                         View
                       </Button>
