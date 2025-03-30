@@ -110,10 +110,10 @@ const CreateEventForm: React.FC = () => {
         image: imageUrl,
         images,
         status: 'pending' as const,
-        userId: user?.id || 'guest',
+        userId: String(user?.id || 'guest'), // Convert userId to string explicitly
       };
       
-      const createdEvent = await createEvent(eventData, user?.id || 'guest');
+      const createdEvent = await createEvent(eventData, String(user?.id || 'guest')); // Convert to string here as well
       
       toast({
         title: "Success",

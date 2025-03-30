@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
           setError('User not authenticated');
           return;
         }
-        const eventsData = await getUserEvents(user.id);
+        const eventsData = await getUserEvents(String(user.id));
         setEvents(eventsData);
       } catch (err) {
         console.error('Error loading events:', err);
@@ -98,8 +98,6 @@ const Dashboard: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedEventId) {
-      // Here you would typically call an API to delete the event
-      // For now, let's just simulate a deletion by filtering the event out of the state
       setEvents(events.filter(event => event.id !== selectedEventId));
       setIsDeleteModalOpen(false);
       setSelectedEventId(null);
@@ -262,7 +260,9 @@ const Dashboard: React.FC = () => {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={cancelDelete}>{t('common.cancel')}</AlertDialogCancel>
-              <AlertDialogAction variant="destructive" onClick={confirmDelete}>{t('common.delete')}</AlertDialogAction>
+              <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                {t('common.delete')}
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
