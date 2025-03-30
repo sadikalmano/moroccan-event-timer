@@ -15,6 +15,20 @@ export const getEvents = async (): Promise<Event[]> => {
   });
 };
 
+// Get events for a specific user
+export const getUserEvents = async (userId: string): Promise<Event[]> => {
+  // In a real app, this would be an API call to fetch user-specific events
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Filter events by user ID, or return all events for demo users
+      const userEvents = userId === 'sample' 
+        ? mockEvents 
+        : mockEvents.filter(event => event.userId === userId);
+      resolve(userEvents);
+    }, 500);
+  });
+};
+
 // Get event by ID
 export const getEventById = async (id: string): Promise<Event> => {
   // In a real app, this would be an API call
