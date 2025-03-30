@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,6 +8,7 @@ import { getEventById, subscribeToEvent } from '../services/eventService';
 import { Event } from '../types';
 import CountdownTimer from '../components/CountdownTimer';
 import SocialShare from '../components/SocialShare';
+import EventImageCarousel from '../components/EventImageCarousel';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -70,7 +70,6 @@ const EventDetail: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      // Call API to subscribe to event
       const response = await fetch(`/api/events/${id}/subscribe`, {
         method: 'POST',
         headers: {
@@ -94,7 +93,6 @@ const EventDetail: React.FC = () => {
         description: t('event.subscriptionSuccess'),
       });
       
-      // Reset form
       setSubscriberName('');
       setSubscriberWhatsapp('');
       
@@ -149,7 +147,6 @@ const EventDetail: React.FC = () => {
     );
   };
 
-  // Default coordinates (Morocco center)
   const coordinates = {
     lat: event.coordinates?.lat || 31.7917, 
     lng: event.coordinates?.lng || -7.0926
@@ -158,7 +155,6 @@ const EventDetail: React.FC = () => {
   return (
     <div className="section-container">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Event details */}
         <div className="lg:col-span-2">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -186,18 +182,11 @@ const EventDetail: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative rounded-xl overflow-hidden mb-8">
-              <img
-                src={event.image}
-                alt={event.title}
-                className="w-full h-[400px] object-cover"
-              />
-              <div className="absolute top-4 right-4">
-                <span className="px-4 py-2 bg-primary/90 text-primary-foreground rounded-full backdrop-blur-sm">
-                  {event.category}
-                </span>
-              </div>
-            </div>
+            <EventImageCarousel
+              mainImage={event.image}
+              additionalImages={event.images}
+              title={event.title}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="flex items-center">
@@ -272,7 +261,6 @@ const EventDetail: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Subscribe sidebar */}
         <div className="lg:col-span-1">
           <div className="sticky top-24">
             <Card className="mb-6">
