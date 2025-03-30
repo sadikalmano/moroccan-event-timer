@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -308,7 +309,7 @@ const EventsList = ({ events }: { events: Event[] }) => {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => navigate(`/events/${event.id}/subscribers`)}
+                        onClick={() => navigate(`/events/${String(event.id)}/subscribers`)}
                       >
                         Subscribers
                       </Button>
