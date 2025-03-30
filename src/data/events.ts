@@ -1,4 +1,3 @@
-
 import { Event } from '../types';
 
 export const events: Event[] = [
@@ -21,8 +20,7 @@ export const events: Event[] = [
     coordinates: {
       lat: 31.6295,
       lng: -7.9811
-    },
-    slug: 'marrakech-international-film-festival-a1b2c3'
+    }
   },
   {
     id: '2',
@@ -43,8 +41,7 @@ export const events: Event[] = [
     coordinates: {
       lat: 31.5118,
       lng: -9.7692
-    },
-    slug: 'gnaoua-world-music-festival-d4e5f6'
+    }
   },
   {
     id: '3',
@@ -65,8 +62,7 @@ export const events: Event[] = [
     coordinates: {
       lat: 34.0181,
       lng: -5.0078
-    },
-    slug: 'fes-festival-of-sacred-music-g7h8i9'
+    }
   },
   {
     id: '4',
@@ -87,8 +83,7 @@ export const events: Event[] = [
     coordinates: {
       lat: 33.5731,
       lng: -7.5898
-    },
-    slug: 'casablanca-fashion-week-j0k1l2'
+    }
   },
   {
     id: '5',
@@ -109,8 +104,7 @@ export const events: Event[] = [
     coordinates: {
       lat: 30.4202,
       lng: -9.5982
-    },
-    slug: 'timitar-festival-m3n4o5'
+    }
   },
   {
     id: '6',
@@ -131,8 +125,7 @@ export const events: Event[] = [
     coordinates: {
       lat: 31.1021,
       lng: -4.0143
-    },
-    slug: 'marathon-des-sables-p6q7r8'
+    }
   },
   {
     id: '7',
@@ -153,8 +146,7 @@ export const events: Event[] = [
     coordinates: {
       lat: 34.0209,
       lng: -6.8416
-    },
-    slug: 'moroccan-culinary-week-s9t0u1'
+    }
   },
   {
     id: '8',
@@ -175,7 +167,6 @@ export const events: Event[] = [
     coordinates: {
       lat: 35.7673,
       lng: -5.7998
-    },
-    slug: 'tanjazz-festival-v2w3x4'
+    }
   }
 ];

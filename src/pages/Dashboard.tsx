@@ -301,14 +301,14 @@ const EventsList = ({ events }: { events: Event[] }) => {
                       <Button 
                         size="sm" 
                         className="bg-[#1A1F2C] hover:bg-[#2d3546]"
-                        onClick={() => navigate(`/events/${event.slug}`)}
+                        onClick={() => navigate(`/events/${event.id}`)}
                       >
                         View
                       </Button>
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => navigate(`/events/${String(event.id)}/subscribers`)}
+                        onClick={() => navigate(`/events/${event.id}/subscribers`)}
                       >
                         Subscribers
                       </Button>

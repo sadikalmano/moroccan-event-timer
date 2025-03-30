@@ -1,3 +1,4 @@
+
 export interface UserAuth {
   id: string;
   name: string;
@@ -48,9 +49,9 @@ export interface Event {
     lat: number;
     lng: number;
   };
-  slug: string; // Added slug field
 }
 
+// Add User interface for data.ts and mockApi.ts
 export interface User {
   id: string;
   name: string;
@@ -59,11 +60,13 @@ export interface User {
   isAdmin?: boolean;
 }
 
+// Define step interface for the event creation stepper
 export interface EventFormStep {
   title: string;
   description: string;
 }
 
+// Define event form data interface
 export interface EventFormData {
   title: string;
   subtitle: string;

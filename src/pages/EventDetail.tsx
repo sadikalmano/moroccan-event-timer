@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Clock, User, Users } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { getEventBySlug, subscribeToEvent } from '../services/eventService';
+import { getEventById, subscribeToEvent } from '../services/eventService';
 import { Event } from '../types';
 import CountdownTimer from '../components/CountdownTimer';
 import SocialShare from '../components/SocialShare';
@@ -22,7 +23,7 @@ import { Label } from "@/components/ui/label";
 import EventMap from '../components/EventMap';
 
 const EventDetail: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const { t, locale } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -37,11 +38,11 @@ const EventDetail: React.FC = () => {
     async function loadEvent() {
       try {
         setLoading(true);
-        if (!slug) {
-          setError('Event slug is missing');
+        if (!id) {
+          setError('Event ID is missing');
           return;
         }
-        const eventData = await getEventBySlug(slug);
+        const eventData = await getEventById(id);
         setEvent(eventData);
       } catch (err) {
         console.error('Error loading event:', err);
@@ -52,7 +53,7 @@ const EventDetail: React.FC = () => {
     }
 
     loadEvent();
-  }, [slug]);
+  }, [id]);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +70,8 @@ const EventDetail: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      const response = await fetch(`/api/events/${event?.id}/subscribe`, {
+      // Call API to subscribe to event
+      const response = await fetch(`/api/events/${id}/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,6 +94,7 @@ const EventDetail: React.FC = () => {
         description: t('event.subscriptionSuccess'),
       });
       
+      // Reset form
       setSubscriberName('');
       setSubscriberWhatsapp('');
       
@@ -105,25 +108,6 @@ const EventDetail: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(
-      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
-      { day: 'numeric', month: 'long', year: 'numeric' }
-    );
-  };
-
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString(
-      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
-      { hour: '2-digit', minute: '2-digit' }
-    );
-  };
-
-  const coordinates = {
-    lat: event?.coordinates?.lat || 31.7917, 
-    lng: event?.coordinates?.lng || -7.0926
   };
 
   if (loading) {
@@ -151,9 +135,30 @@ const EventDetail: React.FC = () => {
     );
   }
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
+      { day: 'numeric', month: 'long', year: 'numeric' }
+    );
+  };
+
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString(
+      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
+      { hour: '2-digit', minute: '2-digit' }
+    );
+  };
+
+  // Default coordinates (Morocco center)
+  const coordinates = {
+    lat: event.coordinates?.lat || 31.7917, 
+    lng: event.coordinates?.lng || -7.0926
+  };
+
   return (
     <div className="section-container">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Event details */}
         <div className="lg:col-span-2">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -169,13 +174,13 @@ const EventDetail: React.FC = () => {
                 >
                   ← {t('common.backToEvents')}
                 </Button>
-                <h1 className="text-3xl md:text-4xl font-bold mb-2">{event?.title}</h1>
-                <p className="text-xl text-muted-foreground mb-4">{event?.subtitle}</p>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">{event.title}</h1>
+                <p className="text-xl text-muted-foreground mb-4">{event.subtitle}</p>
               </div>
               <div className="mt-4 md:mt-0">
                 <SocialShare 
-                  url={`/events/${event?.slug}`} 
-                  title={event?.title || ''} 
+                  url={`/events/${event.id}`} 
+                  title={event.title} 
                   compact 
                 />
               </div>
@@ -183,13 +188,13 @@ const EventDetail: React.FC = () => {
 
             <div className="relative rounded-xl overflow-hidden mb-8">
               <img
-                src={event?.image}
-                alt={event?.title}
+                src={event.image}
+                alt={event.title}
                 className="w-full h-[400px] object-cover"
               />
               <div className="absolute top-4 right-4">
                 <span className="px-4 py-2 bg-primary/90 text-primary-foreground rounded-full backdrop-blur-sm">
-                  {event?.category}
+                  {event.category}
                 </span>
               </div>
             </div>
@@ -199,7 +204,7 @@ const EventDetail: React.FC = () => {
                 <Calendar className="w-5 h-5 mr-3 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">{t('event.date')}</p>
-                  <p className="font-medium">{formatDate(event?.startDate)}</p>
+                  <p className="font-medium">{formatDate(event.startDate)}</p>
                 </div>
               </div>
 
@@ -207,7 +212,7 @@ const EventDetail: React.FC = () => {
                 <Clock className="w-5 h-5 mr-3 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">{t('event.time')}</p>
-                  <p className="font-medium">{formatTime(event?.startDate)} - {formatTime(event?.endDate)}</p>
+                  <p className="font-medium">{formatTime(event.startDate)} - {formatTime(event.endDate)}</p>
                 </div>
               </div>
 
@@ -215,7 +220,7 @@ const EventDetail: React.FC = () => {
                 <MapPin className="w-5 h-5 mr-3 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">{t('event.location')}</p>
-                  <p className="font-medium">{event?.location}, {event?.city}</p>
+                  <p className="font-medium">{event.location}, {event.city}</p>
                 </div>
               </div>
 
@@ -223,7 +228,7 @@ const EventDetail: React.FC = () => {
                 <User className="w-5 h-5 mr-3 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">{t('event.organizer')}</p>
-                  <p className="font-medium">{event?.organizer}</p>
+                  <p className="font-medium">{event.organizer}</p>
                 </div>
               </div>
             </div>
@@ -231,7 +236,7 @@ const EventDetail: React.FC = () => {
             <div className="mb-10">
               <h2 className="text-2xl font-semibold mb-4">{t('event.about')}</h2>
               <div className="prose max-w-none">
-                <p className="whitespace-pre-line">{event?.description}</p>
+                <p className="whitespace-pre-line">{event.description}</p>
               </div>
             </div>
 
@@ -241,10 +246,10 @@ const EventDetail: React.FC = () => {
                   <MapPin className="w-5 h-5 text-primary" />
                   {t('event.location')}
                 </CardTitle>
-                <CardDescription>{event?.location}, {event?.city}</CardDescription>
+                <CardDescription>{event.location}, {event.city}</CardDescription>
               </CardHeader>
               <CardContent className="p-0">
-                <EventMap coordinates={coordinates} locationName={`${event?.location}, ${event?.city}`} />
+                <EventMap coordinates={coordinates} locationName={`${event.location}, ${event.city}`} />
               </CardContent>
             </Card>
 
@@ -256,17 +261,18 @@ const EventDetail: React.FC = () => {
               
               <div className="bg-secondary/50 rounded-lg p-4">
                 <p className="text-lg font-medium">
-                  {event?.subscribers?.length || 0} {t('event.peopleJoined')}
+                  {event.subscribers?.length || 0} {t('event.peopleJoined')}
                 </p>
               </div>
             </div>
 
             <div className="mb-10">
-              <SocialShare url={`/events/${event?.slug}`} title={event?.title || ''} />
+              <SocialShare url={`/events/${event.id}`} title={event.title} />
             </div>
           </motion.div>
         </div>
 
+        {/* Subscribe sidebar */}
         <div className="lg:col-span-1">
           <div className="sticky top-24">
             <Card className="mb-6">
@@ -312,7 +318,7 @@ const EventDetail: React.FC = () => {
                 <CardTitle>{t('event.countdown')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CountdownTimer targetDate={event?.startDate} />
+                <CountdownTimer targetDate={event.startDate} />
               </CardContent>
             </Card>
           </div>
