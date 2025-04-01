@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Clock, User, Users } from 'lucide-react';
@@ -33,6 +33,7 @@ const EventDetail: React.FC = () => {
   const [subscriberName, setSubscriberName] = useState('');
   const [subscriberWhatsapp, setSubscriberWhatsapp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function loadEvent() {
@@ -54,6 +55,17 @@ const EventDetail: React.FC = () => {
 
     loadEvent();
   }, [id]);
+
+  useEffect(() => {
+    const shouldScroll = sessionStorage.getItem('scrollToEventImage') === 'true';
+    
+    if (shouldScroll && imageRef.current && !loading) {
+      setTimeout(() => {
+        imageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        sessionStorage.removeItem('scrollToEventImage');
+      }, 100);
+    }
+  }, [loading, event]);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,6 +120,25 @@ const EventDetail: React.FC = () => {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
+      { day: 'numeric', month: 'long', year: 'numeric' }
+    );
+  };
+
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString(
+      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
+      { hour: '2-digit', minute: '2-digit' }
+    );
+  };
+
+  const coordinates = {
+    lat: event.coordinates?.lat || 31.7917, 
+    lng: event.coordinates?.lng || -7.0926
+  };
+
   if (loading) {
     return (
       <div className="section-container">
@@ -132,25 +163,6 @@ const EventDetail: React.FC = () => {
       </div>
     );
   }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(
-      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
-      { day: 'numeric', month: 'long', year: 'numeric' }
-    );
-  };
-
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString(
-      locale === 'fr' ? 'fr-FR' : (locale === 'ar' ? 'ar-MA' : 'en-US'),
-      { hour: '2-digit', minute: '2-digit' }
-    );
-  };
-
-  const coordinates = {
-    lat: event.coordinates?.lat || 31.7917, 
-    lng: event.coordinates?.lng || -7.0926
-  };
 
   return (
     <div className="section-container">
@@ -182,11 +194,13 @@ const EventDetail: React.FC = () => {
               </div>
             </div>
 
-            <EventImageCarousel
-              mainImage={event.image}
-              additionalImages={event.images}
-              title={event.title}
-            />
+            <div ref={imageRef}>
+              <EventImageCarousel
+                mainImage={event.image}
+                additionalImages={event.images}
+                title={event.title}
+              />
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="flex items-center">

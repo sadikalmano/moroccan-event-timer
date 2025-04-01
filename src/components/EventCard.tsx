@@ -15,6 +15,11 @@ interface EventCardProps {
 const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
   const { locale, t } = useLanguage();
   
+  const handleViewMoreClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Store scrolling preference in sessionStorage
+    sessionStorage.setItem('scrollToEventImage', 'true');
+  };
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -66,6 +71,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
         <Link 
           to={`/events/${event.id}`} 
           className="block w-full text-center py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md transition-colors"
+          onClick={handleViewMoreClick}
         >
           {t('common.viewMore')}
         </Link>
