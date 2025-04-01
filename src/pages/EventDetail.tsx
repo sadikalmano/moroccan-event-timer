@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -134,11 +135,6 @@ const EventDetail: React.FC = () => {
     );
   };
 
-  const coordinates = {
-    lat: event.coordinates?.lat || 31.7917, 
-    lng: event.coordinates?.lng || -7.0926
-  };
-
   if (loading) {
     return (
       <div className="section-container">
@@ -163,6 +159,12 @@ const EventDetail: React.FC = () => {
       </div>
     );
   }
+
+  // Only calculate coordinates once we know event exists
+  const coordinates = {
+    lat: event.coordinates?.lat || 31.7917, 
+    lng: event.coordinates?.lng || -7.0926
+  };
 
   return (
     <div className="section-container">

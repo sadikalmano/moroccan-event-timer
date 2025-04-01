@@ -61,7 +61,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
         
         <div className="flex items-center text-sm text-foreground/70 mb-4">
           <Users className="w-4 h-4 mr-2" />
-          <span>{event.subscribers?.length || 0} {t('event.subscribers')}</span>
+          <span>{event.subscribers?.length || 0} {t('event.peopleJoined')}</span>
         </div>
         
         <div className="mb-4">
