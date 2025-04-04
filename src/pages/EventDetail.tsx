@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Calendar, MapPin, Clock, User, Users } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
-import { getEventById, subscribeToEvent } from '../services/eventService';
+import { getEventBySlug } from '../services/eventService';
 import { Event } from '../types';
 import CountdownTimer from '../components/CountdownTimer';
 import SocialShare from '../components/SocialShare';
@@ -24,7 +24,7 @@ import { Label } from "@/components/ui/label";
 import EventMap from '../components/EventMap';
 
 const EventDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const { t, locale } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -40,11 +40,11 @@ const EventDetail: React.FC = () => {
     async function loadEvent() {
       try {
         setLoading(true);
-        if (!id) {
-          setError('Event ID is missing');
+        if (!slug) {
+          setError('Event slug is missing');
           return;
         }
-        const eventData = await getEventById(id);
+        const eventData = await getEventBySlug(slug);
         setEvent(eventData);
       } catch (err) {
         console.error('Error loading event:', err);
@@ -55,7 +55,7 @@ const EventDetail: React.FC = () => {
     }
 
     loadEvent();
-  }, [id]);
+  }, [slug]);
 
   useEffect(() => {
     const shouldScroll = sessionStorage.getItem('scrollToEventImage') === 'true';
@@ -83,7 +83,13 @@ const EventDetail: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      const response = await fetch(`/api/events/${id}/subscribe`, {
+      // Note: Updated to use event ID for API endpoint
+      const eventId = event?.id;
+      if (!eventId) {
+        throw new Error('Event ID is missing');
+      }
+      
+      const response = await fetch(`/api/events/${eventId}/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -69,7 +69,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, index }) => {
         </div>
         
         <Link 
-          to={`/events/${event.id}`} 
+          to={`/events/${event.slug}`} 
           className="block w-full text-center py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md transition-colors"
           onClick={handleViewMoreClick}
         >

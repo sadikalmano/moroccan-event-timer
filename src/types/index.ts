@@ -29,6 +29,7 @@ export interface Subscriber {
 
 export interface Event {
   id: string;
+  slug: string;
   title: string;
   subtitle: string;
   description: string;
