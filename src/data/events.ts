@@ -1,8 +1,11 @@
+
 import { Event } from '../types';
+import { generateSlug } from '../services/eventService';
 
 export const events: Event[] = [
   {
     id: '1',
+    slug: 'marrakech-international-film-festival',
     title: 'Marrakech International Film Festival',
     subtitle: 'Annual celebration of world cinema featuring screenings, workshops, and celebrity appearances',
     description: 'The Marrakech International Film Festival is one of the most prestigious film festivals in Africa and the Middle East. Established in 2001, this annual celebration brings together filmmakers, actors, and cinema enthusiasts from around the world. The festival features screenings of films from diverse cultures, masterclasses with renowned directors, and panel discussions on the art and business of filmmaking. Each year, the festival attracts Hollywood stars and international celebrities who walk the red carpet at the opening and closing ceremonies. Beyond the glamour, the festival is committed to promoting Moroccan cinema and providing a platform for emerging talents from the region.',
@@ -24,6 +27,7 @@ export const events: Event[] = [
   },
   {
     id: '2',
+    slug: 'gnaoua-world-music-festival',
     title: 'Gnaoua World Music Festival',
     subtitle: 'Essaouira\'s celebration of Gnaoua music traditions and global cultural exchange',
     description: 'The Gnaoua World Music Festival is one of Morocco\'s most vibrant and culturally significant musical events. Held annually in the coastal city of Essaouira, this festival celebrates the rich tradition of Gnaoua music, a unique genre with roots in sub-Saharan Africa that blends spiritual rhythms, acrobatic dancing, and colorful costumes. Over four days, the festival transforms Essaouira into a hub of music and cultural exchange, with performances taking place in historic venues throughout the medina. Beyond traditional Gnaoua music, the festival features collaborations between Gnaoua masters and international artists from jazz, blues, reggae, and other world music genres. This fusion of musical traditions has made the festival a powerful symbol of cross-cultural dialogue and artistic innovation.',
@@ -45,6 +49,7 @@ export const events: Event[] = [
   },
   {
     id: '3',
+    slug: 'fes-festival-of-sacred-music',
     title: 'Fes Festival of Sacred Music',
     subtitle: 'A spiritual journey through diverse religious and cultural musical traditions',
     description: 'The Fes Festival of Sacred Music is a renowned annual event that brings together musicians and artists from diverse spiritual traditions around the world. Founded in 1994, this prestigious festival takes place in the ancient imperial city of Fes, a UNESCO World Heritage site known for its rich cultural heritage and well-preserved medieval architecture. The festival celebrates the universal language of sacred music as a means of promoting dialogue, understanding, and peace between different cultures and religions. Each edition features performances by artists representing various spiritual traditions, including Sufi mysticism, Andalusian classical music, Gregorian chants, Hindu devotional songs, and Buddhist ceremonial music. Concerts are held in historic venues throughout the city, including the magnificent Bab Al Makina, an open-air venue framed by the walls of the Royal Palace.',
@@ -66,6 +71,7 @@ export const events: Event[] = [
   },
   {
     id: '4',
+    slug: 'casablanca-fashion-week',
     title: 'Casablanca Fashion Week',
     subtitle: 'Morocco\'s premier fashion event showcasing local and international designers',
     description: 'Casablanca Fashion Week has emerged as one of Africa\'s most influential fashion events, putting Morocco on the global fashion map. This annual showcase brings together established and emerging designers from Morocco, the broader African continent, and international fashion capitals. The event features runway shows, exhibitions, and industry talks that highlight both contemporary trends and traditional craftsmanship. Moroccan designers often showcase collections that blend modern aesthetics with traditional elements like embroidery, weaving, and leather work, creating a unique fusion that appeals to global markets. Beyond the glitz and glamour, Casablanca Fashion Week serves as an important platform for discussing sustainability, ethical production, and the preservation of traditional artisanal techniques in the fashion industry.',
@@ -87,6 +93,7 @@ export const events: Event[] = [
   },
   {
     id: '5',
+    slug: 'timitar-festival',
     title: 'Timitar Festival',
     subtitle: 'Celebrating Amazigh culture and music in the coastal city of Agadir',
     description: 'The Timitar Festival is one of Morocco\'s largest music festivals, dedicated to celebrating Amazigh (Berber) culture and promoting dialogue between different musical traditions. Held annually in the coastal city of Agadir, this vibrant four-day event attracts over 500,000 spectators. The festival features performances by renowned Amazigh artists alongside musicians from diverse backgrounds, including African, Middle Eastern, European, and American performers. This rich musical tapestry showcases traditional instruments like the ribab, banjo, and drums alongside modern arrangements, creating a unique blend of ancient and contemporary sounds. Beyond music, the festival includes exhibitions of Amazigh art, workshops on traditional crafts, and discussions on cultural heritage preservation. Timitar has become an important platform for asserting and revitalizing Amazigh identity while fostering cross-cultural exchange and mutual understanding.',
@@ -108,6 +115,7 @@ export const events: Event[] = [
   },
   {
     id: '6',
+    slug: 'marathon-des-sables',
     title: 'Marathon des Sables',
     subtitle: 'The legendary ultra-marathon across the Moroccan Sahara Desert',
     description: 'The Marathon des Sables (Marathon of the Sands) is widely regarded as one of the toughest foot races on Earth. This legendary ultra-marathon takes participants on a grueling six-day, 250-kilometer journey across the harsh Moroccan Sahara Desert. Competitors must be entirely self-sufficient, carrying all necessary equipment and food for the duration of the race, with water being the only provision supplied by the organizers. Facing extreme temperatures that can exceed 50°C (122°F) during the day and drop below freezing at night, participants navigate through challenging terrain including endless sand dunes, dried river beds, stone plateaus, and occasional mountain passes. The race attracts elite athletes and adventure seekers from around the world, with many participants running to raise funds for charitable causes. Beyond the physical challenge, the Marathon des Sables offers a profound experience of self-discovery and resilience against the backdrop of Morocco\'s breathtaking desert landscapes.',
@@ -129,6 +137,7 @@ export const events: Event[] = [
   },
   {
     id: '7',
+    slug: 'moroccan-culinary-week',
     title: 'Moroccan Culinary Week',
     subtitle: 'Celebrating the rich and diverse flavors of Moroccan cuisine',
     description: 'Moroccan Culinary Week is an immersive gastronomic celebration that showcases the country\'s rich culinary heritage and contemporary food innovations. This week-long festival features cooking demonstrations by renowned chefs, food tastings, workshops on traditional cooking techniques, and special dinner events at Rabat\'s top restaurants. Visitors can learn about Morocco\'s distinctive regional cuisines, from the Berber influences of the Atlas Mountains to the Andalusian touches in northern dishes and the aromatic tagines of Marrakech. The event highlights the importance of key Moroccan ingredients like saffron, preserved lemons, olives, and argan oil, as well as the country\'s famous spice blends. Special sessions focus on the art of Moroccan pastry making, mint tea preparation, and the cultural significance of food in Moroccan hospitality. The week also includes discussions on sustainable food practices and the future of Moroccan cuisine in the global culinary landscape.',
@@ -150,6 +159,7 @@ export const events: Event[] = [
   },
   {
     id: '8',
+    slug: 'tanjazz-festival',
     title: 'Tanjazz Festival',
     subtitle: 'Tangier\'s international jazz festival bringing together musicians from across the globe',
     description: 'The Tanjazz Festival is an internationally acclaimed event that transforms the coastal city of Tangier into a vibrant hub of jazz and world music. Founded in 2000, this annual festival brings together renowned jazz musicians and emerging talents from Morocco, Africa, Europe, and beyond. The festival takes place across multiple venues in Tangier, including historic theaters, intimate clubs, and open-air stages with breathtaking views of the Mediterranean Sea. The program features a diverse range of jazz styles, from traditional and swing to fusion and experimental, often incorporating Moroccan and African musical elements. Beyond the concerts, Tanjazz offers workshops, jam sessions, and masterclasses that foster musical exchange and education. The festival has become an important cultural bridge between different musical traditions and a celebration of Tangier\'s cosmopolitan identity and rich artistic heritage.',
