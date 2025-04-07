@@ -69,8 +69,8 @@ router.get('/pending', authenticateToken, (req: Request, res: Response) => {
     return res.status(403).json({ message: 'Admin access required' });
   }
   
-  const { events } = getAllEvents();
-  const pendingEvents = events.filter((e: any) => e.status === 'pending');
+  const events = getAllEvents();
+  const pendingEvents = events.filter(e => e.status === 'pending');
   return res.json({ events: pendingEvents });
 });
 
