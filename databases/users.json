@@ -1,0 +1,21 @@
+
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Admin User",
+      "email": "admin@example.com",
+      "password": "$2a$10$uKgT9nG4OnRFYXA0TpgpteuoNXBhO6ui9h1IK9oZwpq1Zpl7E1oCG",
+      "role": "admin",
+      "createdAt": "2023-04-01T10:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "Test User",
+      "email": "user@example.com",
+      "password": "$2a$10$9p8NyGZIAm4VarLhAJJH6.aUWFKzxSLNw0aDtRRFt9LbhqQnB.5hC",
+      "role": "user",
+      "createdAt": "2023-04-02T10:00:00.000Z"
+    }
+  ]
+}

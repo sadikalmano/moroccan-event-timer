@@ -1,6 +1,7 @@
 
-// This file is now a client-side utility for making API requests
-// instead of direct database connections
+// This file handles API requests to our JSON database
+
+import { UserAuth, Event } from '../types';
 
 const API_URL = '/api';
 
@@ -68,6 +69,10 @@ export async function getEventByIdAPI(id: string | number) {
   return fetchWithAuth(`/events/${id}`);
 }
 
+export async function getEventBySlugAPI(slug: string) {
+  return fetchWithAuth(`/events/slug/${slug}`);
+}
+
 export async function createEventAPI(eventData: any) {
   return fetchWithAuth('/events', {
     method: 'POST',
@@ -75,7 +80,7 @@ export async function createEventAPI(eventData: any) {
   });
 }
 
-export async function updateEventStatusAPI(eventId: number, status: 'approved' | 'rejected') {
+export async function updateEventStatusAPI(eventId: number | string, status: 'approved' | 'rejected') {
   return fetchWithAuth(`/events/${eventId}/status`, {
     method: 'PATCH',
     body: JSON.stringify({ status })

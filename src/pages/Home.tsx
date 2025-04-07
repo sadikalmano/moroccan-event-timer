@@ -5,12 +5,14 @@ import { Filter, Search } from 'lucide-react';
 import Hero from '../components/Hero';
 import EventCard from '../components/EventCard';
 import { useLanguage } from '../contexts/LanguageContext';
-import { events } from '../data/events';
+import { getEventsAPI } from '../utils/db';
+import { useToast } from '../hooks/use-toast';
+import { useQuery } from '@tanstack/react-query';
 import type { Event, FilterOptions } from '../types';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
+  const { toast } = useToast();
   const [filters, setFilters] = useState<FilterOptions>({
     search: '',
     city: '',
@@ -18,50 +20,27 @@ const Home: React.FC = () => {
     sortBy: 'newest'
   });
   
+  // Fetch events using React Query
+  const { data: events = [], isLoading, error } = useQuery({
+    queryKey: ['events', filters],
+    queryFn: () => getEventsAPI(filters),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+  
   // Available filter options
   const cities = [...new Set(events.map(event => event.city))];
   const categories = [...new Set(events.map(event => event.category))];
   
+  // Show error toast if fetching fails
   useEffect(() => {
-    // Apply filters
-    let result = [...events];
-    
-    // Search filter
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      result = result.filter(event => 
-        event.title.toLowerCase().includes(searchLower) || 
-        event.subtitle.toLowerCase().includes(searchLower) ||
-        event.description.toLowerCase().includes(searchLower)
-      );
-    }
-    
-    // City filter
-    if (filters.city) {
-      result = result.filter(event => event.city === filters.city);
-    }
-    
-    // Category filter
-    if (filters.category) {
-      result = result.filter(event => event.category === filters.category);
-    }
-    
-    // Sort
-    if (filters.sortBy === 'newest') {
-      result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    } else if (filters.sortBy === 'closest') {
-      const now = new Date().getTime();
-      result.sort((a, b) => {
-        const timeToA = new Date(a.startDate).getTime() - now;
-        const timeToB = new Date(b.startDate).getTime() - now;
-        return timeToA - timeToB;
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to load events. Please try again later.',
+        variant: 'destructive',
       });
-      // Only include upcoming events
-      result = result.filter(event => new Date(event.startDate) > new Date());
     }
-    
-    setFilteredEvents(result);
-  }, [filters]);
+  }, [error, toast]);
   
   return (
     <div>
@@ -145,18 +124,25 @@ const Home: React.FC = () => {
             </div>
           </div>
           
+          {/* Loading state */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-16">
+              <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+          
           {/* Events grid */}
-          {filteredEvents.length > 0 ? (
+          {!isLoading && events.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredEvents.map((event, index) => (
+              {events.map((event, index) => (
                 <EventCard key={event.id} event={event} index={index} />
               ))}
             </div>
-          ) : (
+          ) : !isLoading ? (
             <div className="text-center py-16">
               <p className="text-lg text-muted-foreground">{t('home.noEvents')}</p>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
