@@ -6,6 +6,7 @@ import { createUser, verifyUser } from '../../utils/jsonDb';
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+// Register a new user
 router.post('/register', async (req: Request, res: Response) => {
   try {
     const { name, email, password, organization } = req.body;
@@ -28,6 +29,7 @@ router.post('/register', async (req: Request, res: Response) => {
   }
 });
 
+// Login an existing user
 router.post('/login', async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;

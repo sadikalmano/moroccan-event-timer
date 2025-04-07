@@ -68,7 +68,7 @@ router.get('/slug/:slug', (req: Request, res: Response) => {
 // Get events for authenticated user
 router.get('/user/events', authenticateToken, (req: Request, res: Response) => {
   try {
-    const events = getUserEvents(req.user.userId);
+    const events = getUserEvents(req.user!.userId);
     res.json(events);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -78,7 +78,7 @@ router.get('/user/events', authenticateToken, (req: Request, res: Response) => {
 // Create new event
 router.post('/', authenticateToken, (req: Request, res: Response) => {
   try {
-    const event = createEvent(req.body, req.user.userId);
+    const event = createEvent(req.body, req.user!.userId);
     res.status(201).json(event);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -88,7 +88,7 @@ router.post('/', authenticateToken, (req: Request, res: Response) => {
 // Update event status (admin only)
 router.patch('/:id/status', authenticateToken, (req: Request, res: Response) => {
   try {
-    if (req.user.role !== 'admin') {
+    if (req.user!.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can update event status' });
     }
     
