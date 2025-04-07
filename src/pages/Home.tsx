@@ -27,9 +27,9 @@ const Home: React.FC = () => {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
   
-  // Available filter options
-  const cities = [...new Set(events.map(event => event.city))];
-  const categories = [...new Set(events.map(event => event.category))];
+  // Available filter options with proper type casting
+  const cities = [...new Set(events.map(event => event.city))] as string[];
+  const categories = [...new Set(events.map(event => event.category))] as string[];
   
   // Show error toast if fetching fails
   useEffect(() => {
