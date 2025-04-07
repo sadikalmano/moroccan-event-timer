@@ -1,5 +1,5 @@
 
-import express, { Request, Response, NextFunction } from 'express';
+import { IncomingMessage, ServerResponse } from 'http';
 import jwt from 'jsonwebtoken';
 import { 
   getAllEvents, 
@@ -11,121 +11,175 @@ import {
   subscribeToEvent
 } from '../../utils/jsonDb';
 
-const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+// Custom request type that includes body
+interface ExtendedRequest extends IncomingMessage {
+  body: any;
+  user?: {
+    userId: string;
+    role: string;
+  };
+}
+
 // Middleware to check if user is authenticated
-const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+const authenticateToken = (req: ExtendedRequest, res: ServerResponse): boolean => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
   
   if (!token) {
-    return res.status(401).json({ message: 'Authentication required' });
+    res.writeHead(401, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Authentication required' }));
+    return false;
   }
   
-  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
-    if (err) {
-      return res.status(403).json({ message: 'Invalid or expired token' });
-    }
-    
+  try {
+    const user = jwt.verify(token, JWT_SECRET) as { userId: string, role: string };
     req.user = user;
-    next();
-  });
+    return true;
+  } catch (err) {
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: 'Invalid or expired token' }));
+    return false;
+  }
 };
 
-// Get all events (with optional filters)
-router.get('/', (req: Request, res: Response) => {
-  const filters = req.query;
-  const events = getAllEvents(filters);
+// Handle events routes
+export const handleEventRoutes = async (req: ExtendedRequest, res: ServerResponse) => {
+  const url = new URL(req.url || '/', `http://${req.headers.host}`);
+  const path = url.pathname.replace('/api/events', '');
+  const query = Object.fromEntries(url.searchParams.entries());
   
-  return res.json({ events });
-});
-
-// Get event by slug
-router.get('/slug/:slug', (req: Request, res: Response) => {
-  const { slug } = req.params;
-  const event = findEventBySlug(slug);
-  
-  if (!event) {
-    return res.status(404).json({ message: 'Event not found' });
-  }
-  
-  return res.json({ event });
-});
-
-// Get user's events (requires authentication)
-router.get('/user', authenticateToken, (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Authentication required' });
-  }
-  
-  const events = getUserEvents(req.user.userId);
-  return res.json({ events });
-});
-
-// Get pending events (admin only)
-router.get('/pending', authenticateToken, (req: Request, res: Response) => {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin access required' });
-  }
-  
-  const events = getAllEvents();
-  const pendingEvents = events.filter(e => e.status === 'pending');
-  return res.json({ events: pendingEvents });
-});
-
-// Approve or reject an event (admin only)
-router.patch('/:id/status', authenticateToken, (req: Request, res: Response) => {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin access required' });
-  }
-  
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
+  // Get all events (with optional filters)
+  if (path === '/' && req.method === 'GET') {
+    const events = getAllEvents(query);
     
-    if (status !== 'approved' && status !== 'rejected') {
-      return res.status(400).json({ message: 'Status must be either approved or rejected' });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ events }));
+    return;
+  }
+  
+  // Get event by slug
+  if (path.startsWith('/slug/') && req.method === 'GET') {
+    const slug = path.replace('/slug/', '');
+    const event = findEventBySlug(slug);
+    
+    if (!event) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Event not found' }));
+      return;
     }
     
-    const event = updateEventStatus(id, status);
-    return res.json({ event });
-  } catch (error: any) {
-    return res.status(400).json({ message: error.message });
-  }
-});
-
-// Create a new event (requires authentication)
-router.post('/', authenticateToken, (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Authentication required' });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ event }));
+    return;
   }
   
-  try {
-    const eventData = req.body;
-    const newEvent = createEvent(eventData, req.user.userId);
-    
-    return res.status(201).json({ event: newEvent });
-  } catch (error: any) {
-    return res.status(400).json({ message: error.message });
-  }
-});
-
-// Subscribe to an event
-router.post('/:id/subscribe', (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const subscriberData = req.body;
-    
-    if (!subscriberData.name || !subscriberData.whatsapp) {
-      return res.status(400).json({ message: 'Name and WhatsApp number are required' });
+  // Get user's events (requires authentication)
+  if (path === '/user' && req.method === 'GET') {
+    if (!authenticateToken(req, res)) {
+      return;
     }
     
-    const event = subscribeToEvent(id, subscriberData);
-    return res.json({ event });
-  } catch (error: any) {
-    return res.status(400).json({ message: error.message });
+    const events = getUserEvents(req.user!.userId);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ events }));
+    return;
   }
-});
-
-export default router;
+  
+  // Get pending events (admin only)
+  if (path === '/pending' && req.method === 'GET') {
+    if (!authenticateToken(req, res)) {
+      return;
+    }
+    
+    if (req.user!.role !== 'admin') {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Admin access required' }));
+      return;
+    }
+    
+    const events = getAllEvents();
+    const pendingEvents = events.filter(e => e.status === 'pending');
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ events: pendingEvents }));
+    return;
+  }
+  
+  // Approve or reject an event (admin only)
+  if (path.match(/^\/[^\/]+\/status$/) && req.method === 'PATCH') {
+    if (!authenticateToken(req, res)) {
+      return;
+    }
+    
+    if (req.user!.role !== 'admin') {
+      res.writeHead(403, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: 'Admin access required' }));
+      return;
+    }
+    
+    try {
+      const id = path.split('/')[1];
+      const { status } = req.body;
+      
+      if (status !== 'approved' && status !== 'rejected') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Status must be either approved or rejected' }));
+        return;
+      }
+      
+      const event = updateEventStatus(id, status);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ event }));
+    } catch (error: any) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: error.message }));
+    }
+    return;
+  }
+  
+  // Create a new event (requires authentication)
+  if (path === '/' && req.method === 'POST') {
+    if (!authenticateToken(req, res)) {
+      return;
+    }
+    
+    try {
+      const eventData = req.body;
+      const newEvent = createEvent(eventData, req.user!.userId);
+      
+      res.writeHead(201, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ event: newEvent }));
+    } catch (error: any) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: error.message }));
+    }
+    return;
+  }
+  
+  // Subscribe to an event
+  if (path.match(/^\/[^\/]+\/subscribe$/) && req.method === 'POST') {
+    try {
+      const id = path.split('/')[1];
+      const subscriberData = req.body;
+      
+      if (!subscriberData.name || !subscriberData.whatsapp) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Name and WhatsApp number are required' }));
+        return;
+      }
+      
+      const event = subscribeToEvent(id, subscriberData);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ event }));
+    } catch (error: any) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: error.message }));
+    }
+    return;
+  }
+  
+  // Route not found
+  res.writeHead(404, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ message: 'Route not found' }));
+};
