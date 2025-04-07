@@ -1,6 +1,4 @@
 
-import { UserAuth } from './index';
-
 declare global {
   namespace Express {
     interface Request {
