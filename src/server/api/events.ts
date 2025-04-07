@@ -13,17 +13,8 @@ import {
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// Custom request type that includes body
-interface ExtendedRequest extends IncomingMessage {
-  body: any;
-  user?: {
-    userId: string;
-    role: string;
-  };
-}
-
 // Middleware to check if user is authenticated
-const authenticateToken = (req: ExtendedRequest, res: ServerResponse): boolean => {
+const authenticateToken = (req: IncomingMessage, res: ServerResponse): boolean => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
   
@@ -45,7 +36,7 @@ const authenticateToken = (req: ExtendedRequest, res: ServerResponse): boolean =
 };
 
 // Handle events routes
-export const handleEventRoutes = async (req: ExtendedRequest, res: ServerResponse) => {
+export const handleEventRoutes = async (req: IncomingMessage, res: ServerResponse) => {
   const url = new URL(req.url || '/', `http://${req.headers.host}`);
   const path = url.pathname.replace('/api/events', '');
   const query = Object.fromEntries(url.searchParams.entries());
@@ -120,7 +111,7 @@ export const handleEventRoutes = async (req: ExtendedRequest, res: ServerRespons
     
     try {
       const id = path.split('/')[1];
-      const { status } = req.body;
+      const { status } = req.body || {};
       
       if (status !== 'approved' && status !== 'rejected') {
         res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -145,7 +136,7 @@ export const handleEventRoutes = async (req: ExtendedRequest, res: ServerRespons
     }
     
     try {
-      const eventData = req.body;
+      const eventData = req.body || {};
       const newEvent = createEvent(eventData, req.user!.userId);
       
       res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -161,7 +152,7 @@ export const handleEventRoutes = async (req: ExtendedRequest, res: ServerRespons
   if (path.match(/^\/[^\/]+\/subscribe$/) && req.method === 'POST') {
     try {
       const id = path.split('/')[1];
-      const subscriberData = req.body;
+      const subscriberData = req.body || {};
       
       if (!subscriberData.name || !subscriberData.whatsapp) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
