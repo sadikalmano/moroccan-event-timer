@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { getAllEvents, findEventById, findEventBySlug, getUserEvents, createEvent, updateEventStatus, subscribeToEvent } from '../../utils/jsonDb';
 
@@ -7,7 +7,7 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Middleware to authenticate JWT
-const authenticateToken = (req: any, res: any, next: any) => {
+const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   
@@ -26,7 +26,7 @@ const authenticateToken = (req: any, res: any, next: any) => {
 };
 
 // Get all events with optional filters
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
   try {
     const events = getAllEvents(req.query);
     res.json(events);
@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
 });
 
 // Get event by ID
-router.get('/:id', (req, res) => {
+router.get('/:id', (req: Request, res: Response) => {
   try {
     const event = findEventById(req.params.id);
     
@@ -51,7 +51,7 @@ router.get('/:id', (req, res) => {
 });
 
 // Get event by slug
-router.get('/slug/:slug', (req, res) => {
+router.get('/slug/:slug', (req: Request, res: Response) => {
   try {
     const event = findEventBySlug(req.params.slug);
     
@@ -66,7 +66,7 @@ router.get('/slug/:slug', (req, res) => {
 });
 
 // Get events for authenticated user
-router.get('/user', authenticateToken, (req: any, res) => {
+router.get('/user/events', authenticateToken, (req: Request, res: Response) => {
   try {
     const events = getUserEvents(req.user.userId);
     res.json(events);
@@ -76,7 +76,7 @@ router.get('/user', authenticateToken, (req: any, res) => {
 });
 
 // Create new event
-router.post('/', authenticateToken, (req: any, res) => {
+router.post('/', authenticateToken, (req: Request, res: Response) => {
   try {
     const event = createEvent(req.body, req.user.userId);
     res.status(201).json(event);
@@ -86,7 +86,7 @@ router.post('/', authenticateToken, (req: any, res) => {
 });
 
 // Update event status (admin only)
-router.patch('/:id/status', authenticateToken, (req: any, res) => {
+router.patch('/:id/status', authenticateToken, (req: Request, res: Response) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Only admins can update event status' });
@@ -106,7 +106,7 @@ router.patch('/:id/status', authenticateToken, (req: any, res) => {
 });
 
 // Subscribe to an event
-router.post('/:id/subscribe', (req, res) => {
+router.post('/:id/subscribe', (req: Request, res: Response) => {
   try {
     const { name, whatsapp } = req.body;
     
