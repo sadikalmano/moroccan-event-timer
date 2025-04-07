@@ -91,6 +91,15 @@ export const translations = {
       signIn: 'Sign in',
       name: 'Full Name',
       organization: 'Organization (optional)',
+      passwordsNotMatch: 'Passwords do not match',
+      passwordTooShort: 'Password must be at least 8 characters long',
+      registerFailed: 'Registration Failed',
+      loginFailed: 'Login Failed',
+      unexpectedError: 'An unexpected error occurred',
+      agreeTerms: 'I agree to the',
+      termsService: 'Terms of Service',
+      and: 'and',
+      privacyPolicy: 'Privacy Policy'
     },
     dashboard: {
       myEvents: 'My Events',
@@ -196,6 +205,15 @@ export const translations = {
       signIn: 'Se connecter',
       name: 'Nom complet',
       organization: 'Organisation (optionnel)',
+      passwordsNotMatch: 'Les mots de passe ne correspondent pas',
+      passwordTooShort: 'Le mot de passe doit contenir au moins 8 caractères',
+      registerFailed: 'Échec de l\'inscription',
+      loginFailed: 'Échec de la connexion',
+      unexpectedError: 'Une erreur inattendue s\'est produite',
+      agreeTerms: 'J\'accepte les',
+      termsService: 'Conditions d\'utilisation',
+      and: 'et',
+      privacyPolicy: 'Politique de confidentialité'
     },
     dashboard: {
       myEvents: 'Mes Événements',
@@ -260,7 +278,7 @@ export const translations = {
     about: {
       title: 'حول العد التنازلي للفعاليات المغربية',
       subtitle: 'بوابتك إلى تجارب مغربية أصيلة',
-      description: 'العد التنازلي للفعاليات المغربية هي منصتك الرئيسية لاكتشاف وتتبع أكثر الفعاليات الثقافية والفنية والتقليدية إثارة في جميع أنحاء المغرب. مهمتنا هي ربط السكان المحليين والمسافرين بتجارب مغربية أصيلة، من المهرجانات النابضة بالحياة والمعارض إلى الاحتفالات التقليدية والتجمعات الحديثة.',
+      description: 'العد التنازلي للفعاليات المغربية هي منصتك الرئيسية لاكتشاف وتتبع أكثر الفعاليات الثقافية والفنية والتقليدية إثارة في جميع أنحاء ال��غرب. مهمتنا هي ربط السكان المحليين والمسافرين بتجارب مغربية أصيلة، من المهرجانات النابضة بالحياة والمعارض إلى الاحتفالات التقليدية والتجمعات الحديثة.',
       featuresTitle: 'ميزاتنا',
       feature1Title: 'قوائم شاملة للفعاليات',
       feature1Desc: 'اكتشف مجموعة واسعة من الفعاليات في المغرب، تم اختيارها بعناية لإظهار التراث الث��افي الغني والمشهد المعاصر للبلاد.',
@@ -301,6 +319,15 @@ export const translations = {
       signIn: 'تسجيل الدخول',
       name: 'الاسم الكامل',
       organization: 'المنظمة (اختياري)',
+      passwordsNotMatch: 'كلمات المرور غير متطابقة',
+      passwordTooShort: 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل',
+      registerFailed: 'فشل التسجيل',
+      loginFailed: 'فشل تسجيل الدخول',
+      unexpectedError: 'حدث خطأ غير متوقع',
+      agreeTerms: 'أوافق على',
+      termsService: 'شروط الخدمة',
+      and: 'و',
+      privacyPolicy: 'سياسة الخصوصية'
     },
     dashboard: {
       myEvents: 'فعالياتي',

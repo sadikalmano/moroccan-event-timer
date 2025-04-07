@@ -38,8 +38,13 @@ const server = http.createServer(async (req, res) => {
       });
       
       try {
-        req.body = JSON.parse(body);
+        if (body) {
+          req.body = JSON.parse(body);
+        } else {
+          req.body = {};
+        }
       } catch (e) {
+        console.error('Error parsing request body JSON:', e);
         req.body = {};
       }
     } catch (error) {
@@ -49,6 +54,9 @@ const server = http.createServer(async (req, res) => {
   } else {
     req.body = {};
   }
+
+  // Debug log
+  console.log(`${req.method} ${pathname}`, req.body);
 
   // API Routes
   if (pathname.startsWith('/api/auth')) {

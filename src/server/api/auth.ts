@@ -26,6 +26,7 @@ export const handleAuthRoutes = async (req: IncomingMessage, res: ServerResponse
       // Generate JWT token
       const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
       
+      // Return the response with appropriate headers
       res.writeHead(201, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ token, user }));
     } catch (error: any) {
@@ -51,6 +52,7 @@ export const handleAuthRoutes = async (req: IncomingMessage, res: ServerResponse
       // Generate JWT token
       const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
       
+      // Return the response with appropriate headers
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ token, user }));
     } catch (error: any) {
