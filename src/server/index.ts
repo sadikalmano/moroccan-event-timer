@@ -26,9 +26,9 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Parse JSON body
-  let body = '';
   if (req.method !== 'GET') {
     try {
+      let body = '';
       await new Promise((resolve, reject) => {
         req.on('data', (chunk) => {
           body += chunk.toString();
@@ -44,7 +44,10 @@ const server = http.createServer(async (req, res) => {
       }
     } catch (error) {
       console.error('Error parsing request body:', error);
+      req.body = {};
     }
+  } else {
+    req.body = {};
   }
 
   // API Routes

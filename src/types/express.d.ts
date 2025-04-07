@@ -1,5 +1,16 @@
 
-// This file is kept to maintain compatibility with existing type references,
-// but it no longer contains Express-specific types since Express has been removed.
+// This file contains type definitions for the custom request extensions
+
+import { IncomingMessage } from 'http';
+
+declare module 'http' {
+  interface IncomingMessage {
+    body?: any;
+    user?: {
+      userId: string;
+      role: string;
+    };
+  }
+}
 
 export {};

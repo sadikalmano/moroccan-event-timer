@@ -5,24 +5,15 @@ import { createUser, verifyUser } from '../../utils/jsonDb';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// Custom request type that includes body
-interface ExtendedRequest extends IncomingMessage {
-  body: any;
-  user?: {
-    userId: string;
-    role: string;
-  };
-}
-
 // Handle auth routes
-export const handleAuthRoutes = async (req: ExtendedRequest, res: ServerResponse) => {
+export const handleAuthRoutes = async (req: IncomingMessage, res: ServerResponse) => {
   const url = new URL(req.url || '/', `http://${req.headers.host}`);
   const path = url.pathname.replace('/api/auth', '');
   
   // Register a new user
   if (path === '/register' && req.method === 'POST') {
     try {
-      const { name, email, password, organization } = req.body;
+      const { name, email, password, organization } = req.body || {};
       
       if (!name || !email || !password) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -47,7 +38,7 @@ export const handleAuthRoutes = async (req: ExtendedRequest, res: ServerResponse
   // Login an existing user
   if (path === '/login' && req.method === 'POST') {
     try {
-      const { email, password } = req.body;
+      const { email, password } = req.body || {};
       
       if (!email || !password) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
