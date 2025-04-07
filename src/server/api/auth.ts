@@ -20,12 +20,12 @@ router.post('/register', async (req: Request, res: Response) => {
     // Generate JWT token
     const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
     
-    res.status(201).json({
+    return res.status(201).json({
       token,
       user
     });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 });
 
@@ -43,12 +43,12 @@ router.post('/login', async (req: Request, res: Response) => {
     // Generate JWT token
     const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
     
-    res.json({
+    return res.json({
       token,
       user
     });
   } catch (error: any) {
-    res.status(401).json({ message: error.message });
+    return res.status(401).json({ message: error.message });
   }
 });
 
