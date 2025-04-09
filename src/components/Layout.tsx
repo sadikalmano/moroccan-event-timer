@@ -24,11 +24,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     exit: { opacity: 0, y: -20 }
   };
   
+  if (isDashboard) {
+    return (
+      <>
+        <MetaTags />
+        <AnimatePresence mode="wait">
+          <motion.main 
+            key={location.pathname}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={pageVariants}
+            transition={{ duration: 0.3 }}
+            className="w-full"
+          >
+            {children}
+          </motion.main>
+        </AnimatePresence>
+        <CookieConsent />
+      </>
+    );
+  }
+  
   return (
     <>
       <MetaTags />
       <div className="flex flex-col min-h-screen">
-        {!isDashboard && <Navbar />}
+        <Navbar />
         <AnimatePresence mode="wait">
           <motion.main 
             key={location.pathname}
@@ -42,7 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {children}
           </motion.main>
         </AnimatePresence>
-        {!isDashboard && <Footer />}
+        <Footer />
         <CookieConsent />
       </div>
     </>

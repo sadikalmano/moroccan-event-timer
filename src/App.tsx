@@ -9,6 +9,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Migration from './pages/Migration';
 import Dashboard from './pages/Dashboard';
+import DashboardHome from './pages/dashboard/DashboardHome';
+import DashboardEvents from './pages/dashboard/DashboardEvents';
+import DashboardActivity from './pages/dashboard/DashboardActivity';
+import DashboardSubscribers from './pages/dashboard/DashboardSubscribers';
+import DashboardProfile from './pages/dashboard/DashboardProfile';
+import DashboardSettings from './pages/dashboard/DashboardSettings';
+import CreateEvent from './pages/dashboard/CreateEvent';
 import EventDetail from './pages/EventDetail';
 import NotFound from './pages/NotFound';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -51,7 +58,18 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/migration" element={<Migration />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    
+                    {/* Dashboard routes */}
+                    <Route path="/dashboard" element={<Dashboard />}>
+                      <Route index element={<DashboardHome />} />
+                      <Route path="activity" element={<DashboardActivity />} />
+                      <Route path="events" element={<DashboardEvents />} />
+                      <Route path="events/create" element={<CreateEvent />} />
+                      <Route path="subscribers" element={<DashboardSubscribers />} />
+                      <Route path="profile" element={<DashboardProfile />} />
+                      <Route path="settings" element={<DashboardSettings />} />
+                    </Route>
+                    
                     <Route path="/events/:slug" element={<EventDetail />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

@@ -21,12 +21,15 @@ export default {
         serif: ['Georgia', 'serif'],
       },
       colors: {
-        // Custom color palette
-        accent1: "#74F4F2",  // Teal
-        accent2: "#E3E5F4",  // Light blue/gray
-        dark1: "#222531",    // Darkest blue
-        dark2: "#2E3248",    // Dark blue
-        dark3: "#3C4255",    // Medium blue
+        // Updated color palette to match the image
+        dashboard: {
+          dark: "#1A1F2C",        // Dark sidebar background
+          darker: "#151A27",      // Darker elements
+          card: "#2A2F3C",        // Card backgrounds
+          highlight: "#74F4F2",   // Teal highlight color
+          accent: "#EA384C",      // Red accent
+          muted: "#8E9196",       // Muted text
+        },
         
         // Theme variables
         border: "hsl(var(--border))",

@@ -1,92 +1,47 @@
 
 import React from 'react';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent
-} from "@/components/ui/chart";
-import {
-  BarChart as RechartsBarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  Legend
-} from "recharts";
-import { useTheme } from '@/contexts/ThemeContext';
 
 interface BarChartProps {
-  categories?: string[];
-  series: {
-    name: string;
-    data: number[];
+  data: {
+    label: string;
+    value: number;
   }[];
-  colors?: string[];
   className?: string;
+  color?: string;
+  highlightIndex?: number;
 }
 
-export const BarChart = ({
-  categories = [],
-  series,
-  colors,
-  className
-}: BarChartProps) => {
-  const { theme } = useTheme();
+export const BarChart: React.FC<BarChartProps> = ({ 
+  data, 
+  className = "", 
+  color = "#74F4F2",  // Default to teal highlight color
+  highlightIndex
+}) => {
+  // Find the maximum value to normalize heights
+  const maxValue = Math.max(...data.map(item => item.value));
   
-  // Set theme-specific colors
-  const gridColor = theme === 'dark' ? '#3C4255' : '#E3E5F4';
-  const textColor = theme === 'dark' ? '#E3E5F4' : '#2E3248';
-  
-  // Default colors based on theme
-  const defaultColors = theme === 'dark' ? ["#74F4F2"] : ["#242C4C"];
-  const chartColors = colors || defaultColors;
-  
-  // Transform the series data into a format that Recharts can use
-  const data = series[0].data.map((value, index) => {
-    const category = categories[index] || `Item ${index + 1}`;
-    return {
-      category,
-      [series[0].name]: value
-    };
-  });
-
   return (
-    <div className={`w-full h-full ${className}`}>
-      <ResponsiveContainer width="100%" height="100%">
-        <RechartsBarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
-          <XAxis 
-            dataKey="category" 
-            tick={{ fill: textColor }} 
-            axisLine={{ stroke: gridColor }}
-            fontSize={10}
-          />
-          <YAxis 
-            tick={{ fill: textColor }} 
-            axisLine={{ stroke: gridColor }}
-            fontSize={10}
-          />
-          <Tooltip 
-            content={({ active, payload }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <div className="bg-popover text-popover-foreground p-2 rounded shadow-lg border border-border">
-                    <p className="font-medium">{`${payload[0].name}: ${payload[0].value}`}</p>
-                  </div>
-                );
-              }
-              return null;
-            }}
-          />
-          <Bar 
-            dataKey={series[0].name} 
-            fill={chartColors[0]} 
-            radius={[4, 4, 0, 0]} 
-          />
-        </RechartsBarChart>
-      </ResponsiveContainer>
+    <div className={`flex items-end justify-between h-full ${className}`}>
+      {data.map((item, index) => {
+        const isHighlighted = highlightIndex === index;
+        const normalizedHeight = `${(item.value / maxValue) * 100}%`;
+        
+        return (
+          <div 
+            key={index} 
+            className="h-full flex-1 flex flex-col justify-end px-1"
+          >
+            <div 
+              style={{ 
+                height: normalizedHeight,
+                backgroundColor: isHighlighted ? color : 'rgba(255, 255, 255, 0.2)',
+              }}
+              className="rounded-t-sm w-full transition-all duration-300"
+            />
+            <div className="text-xs text-center mt-2 text-gray-400">{item.label}</div>
+          </div>
+        );
+      })}
     </div>
   );
 };

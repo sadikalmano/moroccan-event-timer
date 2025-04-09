@@ -29,26 +29,26 @@
   }
  
   .dark {
-    /* Dark theme - keeping the same */
-    --background: 228 44% 16%; /* #222531 */
-    --foreground: 228 27% 92%; /* #E3E5F4 */
-    --card: 228 35% 22%; /* #2E3248 */
-    --card-foreground: 228 27% 92%; /* #E3E5F4 */
-    --popover: 228 35% 22%; /* #2E3248 */
-    --popover-foreground: 228 27% 92%; /* #E3E5F4 */
-    --primary: 179 87% 70%; /* #74F4F2 */
-    --primary-foreground: 228 44% 16%; /* #222531 */
-    --secondary: 228 35% 22%; /* #2E3248 */
-    --secondary-foreground: 228 27% 92%; /* #E3E5F4 */
-    --muted: 228 31% 28%; /* #3C4255 */
-    --muted-foreground: 228 10% 70%;
-    --accent: 179 87% 70%; /* #74F4F2 */
-    --accent-foreground: 228 44% 16%; /* #222531 */
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 228 31% 28%; /* #3C4255 */
-    --input: 228 31% 28%; /* #3C4255 */
-    --ring: 179 87% 70%; /* #74F4F2 */
+    /* Dark theme - Updated to match dashboard colors */
+    --background: 222 26% 14%; /* #1A1F2C = dashboard-dark */
+    --foreground: 0 0% 98%; /* #FAFAFA = white */
+    --card: 222 14% 20%; /* #2A2F3C = dashboard-card */
+    --card-foreground: 0 0% 98%; /* #FAFAFA = white */
+    --popover: 222 14% 20%; /* #2A2F3C = dashboard-card */
+    --popover-foreground: 0 0% 98%; /* #FAFAFA = white */
+    --primary: 179 87% 70%; /* #74F4F2 = dashboard-highlight */
+    --primary-foreground: 222 26% 14%; /* #1A1F2C = dashboard-dark */
+    --secondary: 222 14% 20%; /* #2A2F3C = dashboard-card */
+    --secondary-foreground: 0 0% 98%; /* #FAFAFA = white */
+    --muted: 222 14% 25%; /* #383F50 = slightly lighter than card */
+    --muted-foreground: 0 0% 70%; /* #B3B3B3 = light gray */
+    --accent: 179 87% 70%; /* #74F4F2 = dashboard-highlight */
+    --accent-foreground: 222 26% 14%; /* #1A1F2C = dashboard-dark */
+    --destructive: 0 84% 60%; /* #EA384C = dashboard-accent */
+    --destructive-foreground: 0 0% 98%; /* #FAFAFA = white */
+    --border: 222 14% 28%; /* #3C4255 = dark border */
+    --input: 222 14% 28%; /* #3C4255 = dark border */
+    --ring: 179 87% 70%; /* #74F4F2 = dashboard-highlight */
   }
 
   * {
@@ -121,11 +121,11 @@
   
   /* Dashboard specific components */
   .dashboard-card {
-    @apply bg-card rounded-lg border border-border shadow-sm transition-all duration-300;
+    @apply bg-dashboard-card rounded-lg border border-border shadow-sm transition-all duration-300;
   }
   
   .stats-value {
-    @apply text-4xl font-bold text-primary;
+    @apply text-4xl font-bold text-dashboard-highlight;
   }
   
   .stats-label {
